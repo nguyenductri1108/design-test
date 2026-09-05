@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0A0812; }
+  * { box-sizing: border-box; }
+  a { color: #C6F24E; text-decoration: none; border-bottom: 1px solid rgba(198,242,78,0.35); }
+  a:hover { color: #DCFB86; border-bottom-color: #DCFB86; }
+  pre { margin: 0; }
+  @keyframes solPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,92,255,0.55) } 50% { box-shadow: 0 0 0 14px rgba(124,92,255,0) } }
+  @keyframes solBar { 0%,100% { transform: scaleY(0.35) } 50% { transform: scaleY(1) } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#0A0812;color:#F4F1FB;font-family:'Be Vietnam Pro',system-ui,sans-serif;padding:0 0 80px">
+
+  <div style="max-width:1000px;margin:0 auto;padding:56px 24px 0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:13px;background:#7C5CFF;display:flex;align-items:center;justify-content:center;font-size:22px">♪</div>
+      <div>
+        <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:24px;line-height:1.1">Sol Design System</div>
+        <div style="font-size:12.5px;color:#8C82A8;margin-top:1px">v1.0 · dark-only · mobile-first · app học nhạc &amp; luyện tai</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
+      <sc-for list="{{ principles }}" as="p" hint-placeholder-count="4">
+        <div style="padding:15px 16px;border-radius:16px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:#C6F24E">{{ p.title }}</div>
+          <div style="margin-top:5px;font-size:12.5px;line-height:1.5;color:#A79DC0;text-wrap:pretty">{{ p.body }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="max-width:1000px;margin:0 auto;padding:0 24px">
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">01 · NỀN TẢNG</div>
+      <div style="margin-top:6px;font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Màu</div>
+      <div style="margin-top:6px;font-size:13.5px;line-height:1.55;color:#A79DC0;max-width:640px;text-wrap:pretty">Hệ chỉ có một chế độ: tối. Không có light mode — nền tối làm phím đàn sáng và khuông nhạc giấy trắng nổi bật, đó là hai thứ mắt phải bắt được nhanh nhất. Tối đa hai màu nền mỗi màn: <b style="color:#F4F1FB">bg</b> và <b style="color:#F4F1FB">surface</b>.</div>
+
+      <sc-for list="{{ colorGroups }}" as="g" hint-placeholder-count="5">
+        <div style="margin-top:26px">
+          <div style="font-size:14px;font-weight:600">{{ g.title }}</div>
+          <div style="margin-top:3px;font-size:12.5px;color:#8C82A8;line-height:1.5;text-wrap:pretty">{{ g.rule }}</div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px">
+            <sc-for list="{{ g.swatches }}" as="s" hint-placeholder-count="6">
+              <div style="border-radius:13px;overflow:hidden;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+                <div style="height:56px;background:{{ s.hex }};border-bottom:1px solid rgba(255,255,255,0.07)"></div>
+                <div style="padding:9px 10px 11px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F4F1FB">{{ s.token }}</div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8C82A8;margin-top:2px">{{ s.hex }}</div>
+                  <div style="font-size:11px;color:#A79DC0;margin-top:5px;line-height:1.35">{{ s.use }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <div style="margin-top:22px;padding:15px 16px;border-radius:16px;background:rgba(255,84,112,0.09);border:1px solid rgba(255,84,112,0.3)">
+        <div style="font-size:13px;font-weight:600;color:#FF5470">Không được làm</div>
+        <div style="margin-top:6px;font-size:12.5px;line-height:1.6;color:#E4DFF2">Không dùng lime cho trạng thái "đúng" (lime = hành động &amp; tiến độ, green = đúng). Không dùng violet cho nút xác nhận chính. Không tạo màu mới ngoài bảng này — cần sắc độ thì lấy từ cột <span style="font-family:'JetBrains Mono',monospace">*-press</span> / <span style="font-family:'JetBrains Mono',monospace">*-tint</span>. Không đặt chữ body lên nền lime/green (chỉ chữ <span style="font-family:'JetBrains Mono',monospace">-ink</span> đậm, cỡ CTA).</div>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Chữ</div>
+      <div style="margin-top:6px;font-size:13.5px;line-height:1.55;color:#A79DC0;max-width:640px;text-wrap:pretty">Hai họ chữ, không thêm. <b style="color:#F4F1FB">Baloo 2</b> (bo tròn, hỗ trợ đủ dấu tiếng Việt) cho mọi thứ cần vui và to: tiêu đề, số liệu, nút. <b style="color:#F4F1FB">Be Vietnam Pro</b> cho toàn bộ chữ đọc: câu hỏi phụ, giải thích lý thuyết, nhãn.</div>
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ typeRows }}" as="t" hint-placeholder-count="11">
+          <div style="display:flex;align-items:baseline;gap:18px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.07);flex-wrap:wrap">
+            <div style="width:150px;flex-shrink:0">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#C6F24E">{{ t.token }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8C82A8;margin-top:3px">{{ t.spec }}</div>
+            </div>
+            <div style="flex:1;min-width:200px;font:{{ t.font }};color:{{ t.color }};letter-spacing:{{ t.ls }};text-transform:{{ t.tt }}">{{ t.sample }}</div>
+            <div style="width:170px;font-size:11.5px;color:#A79DC0;line-height:1.4">{{ t.use }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Khoảng cách, bo góc, độ nổi</div>
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+        <div style="padding:16px;border-radius:18px;background:#1E1830">
+          <div style="font-size:14px;font-weight:600">Spacing — thang 4pt</div>
+          <div style="margin-top:4px;font-size:12px;color:#8C82A8">Lề ngang màn hình luôn 20px. Khoảng cách giữa các card 9–10px, giữa các khối 16px, giữa các section 22–26px.</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ spaces }}" as="s" hint-placeholder-count="8">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:52px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#A79DC0">{{ s.token }}</div>
+                <div style="height:10px;border-radius:3px;background:#7C5CFF;width:{{ s.px }}"></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#6E6690">{{ s.px }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px;border-radius:18px;background:#1E1830">
+          <div style="font-size:14px;font-weight:600">Radius</div>
+          <div style="margin-top:4px;font-size:12px;color:#8C82A8">Càng to càng bo mạnh. Không có góc vuông ở bất cứ đâu trừ dòng kẻ khuông nhạc.</div>
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:9px">
+            <sc-for list="{{ radii }}" as="r" hint-placeholder-count="8">
+              <div style="text-align:center">
+                <div style="width:60px;height:52px;background:#2C2442;border:1.5px solid #7C5CFF;border-radius:{{ r.px }}"></div>
+                <div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#A79DC0">{{ r.token }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6E6690">{{ r.px }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;padding:16px;border-radius:18px;background:#1E1830">
+        <div style="font-size:14px;font-weight:600">Elevation — mô hình "chunky"</div>
+        <div style="margin-top:4px;font-size:12.5px;color:#A79DC0;line-height:1.55;max-width:680px;text-wrap:pretty">Không dùng bóng mờ. Mọi thứ bấm được đều có <b style="color:#F4F1FB">mặt đáy đặc</b> (<span style="font-family:'JetBrains Mono',monospace;font-size:11.5px">0 Npx 0 &lt;màu-press&gt;</span>), và khi nhấn thì trồi xuống đúng bằng chiều cao mặt đáy trừ 2px. Đây là dấu hiệu duy nhất cho biết "cái này bấm được" — không bao giờ dùng cho khối tĩnh.</div>
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <div style="text-align:center">
+            <div style="padding:12px 20px;border-radius:14px;background:#7C5CFF;color:#fff;font-family:'Baloo 2',cursive;font-weight:800;font-size:15px;box-shadow:0 4px 0 #5837C9" style-active="transform:translateY(2px);box-shadow:0 2px 0 #5837C9">lift-sm</div>
+            <div style="margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6E6690">0 4px 0 · nhấn 2px</div>
+          </div>
+          <div style="text-align:center">
+            <div style="padding:15px 24px;border-radius:17px;background:#C6F24E;color:#171227;font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">lift-md</div>
+            <div style="margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6E6690">0 5px 0 · nhấn 3px</div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:70px;height:70px;border-radius:50%;background:#C6F24E;color:#171227;display:flex;align-items:center;justify-content:center;font-size:26px;font-family:'Baloo 2',cursive;font-weight:800;box-shadow:0 6px 0 #96BC2C" style-active="transform:translateY(4px);box-shadow:0 2px 0 #96BC2C">♪</div>
+            <div style="margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6E6690">0 6px 0 · nhấn 4px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">02 · COMPONENT</div>
+      <div style="margin-top:6px;font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">14 khối dựng nên toàn bộ app</div>
+      <div style="margin-top:6px;font-size:13.5px;color:#A79DC0;line-height:1.55;max-width:640px;text-wrap:pretty">Mỗi khối dưới đây là bản thật, bấm được. Mọi màn hình mới phải lắp từ đúng bộ này.</div>
+
+      <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">Button</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Full-width, một nút chính mỗi màn. Lime = tiến lên. Violet = nghe/phát. Disabled vẫn giữ mặt đáy để không nhảy layout.</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+            <div style="padding:16px;border-radius:17px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;letter-spacing:0.3px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Kiểm tra</div>
+            <div style="padding:16px;border-radius:17px;background:#7C5CFF;color:#fff;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;cursor:pointer;box-shadow:0 5px 0 #5837C9" style-active="transform:translateY(3px);box-shadow:0 2px 0 #5837C9">Nghe lại</div>
+            <div style="padding:16px;border-radius:17px;background:#241D38;color:#5B5279;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;box-shadow:0 5px 0 #191330">Chọn đi đã</div>
+            <div style="padding:12px;border-radius:13px;background:#241D38;color:#CFC7E4;text-align:center;font-size:13px;cursor:pointer">▶ Ghost — hành động phụ</div>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">OptionRow — 4 trạng thái</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Badge chữ cái đổi màu theo trạng thái, viền 1.5px là tín hiệu chính. Sau khi chấm: đáp án đúng luôn hiện green, kể cả khi người dùng chọn sai.</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ optionStates }}" as="o" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:13px;padding:15px;border-radius:16px;background:{{ o.bg }};border:1.5px solid {{ o.border }}">
+                <div style="width:26px;height:26px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:{{ o.badgeBg }};color:{{ o.badgeFg }}">{{ o.key }}</div>
+                <div style="font-size:14.5px;font-weight:500">{{ o.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">PathNode — 3 trạng thái</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Lime = xong, violet + vòng nhịp = đang học (chỉ một node duy nhất trên cả lộ trình), surface-2 = khoá. Cả dòng bấm được, không chỉ hình tròn.</div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ nodeStates }}" as="n" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;cursor:pointer">
+                <div style="width:64px;height:64px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:24px;background:{{ n.bg }};color:{{ n.fg }};box-shadow:0 6px 0 {{ n.shadow }};animation:{{ n.anim }}">{{ n.icon }}</div>
+                <div>
+                  <div style="font-size:14px;font-weight:600;color:{{ n.titleColor }}">{{ n.title }}</div>
+                  <div style="font-size:11.5px;color:#8C82A8;margin-top:2px">{{ n.sub }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">Progress · Hearts · Streak</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Thanh tiến độ luôn lime trên rãnh surface-2, cao 12px trong bài học và 7px trong banner chương. Ba chỉ số đầu màn theo thứ tự cố định: streak → XP → tim.</div>
+          <div style="margin-top:16px;display:flex;align-items:center;gap:13px">
+            <div style="font-size:19px;color:#8C82A8">✕</div>
+            <div style="flex:1;height:12px;border-radius:99px;background:#241D38;overflow:hidden"><div style="height:100%;width:60%;border-radius:99px;background:#C6F24E"></div></div>
+            <div style="display:flex;align-items:center;gap:5px"><div style="font-size:14px">❤️</div><div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:#FF5470">2</div></div>
+          </div>
+          <div style="margin-top:16px;display:flex;justify-content:space-between;padding:11px 14px;border-radius:14px;background:#241D38">
+            <div style="display:flex;align-items:center;gap:7px"><div style="font-size:16px">🔥</div><div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:#FFB020">12</div></div>
+            <div style="display:flex;align-items:center;gap:7px"><div style="width:9px;height:9px;border-radius:3px;background:#C6F24E"></div><div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:#C6F24E">1.240</div></div>
+            <div style="display:flex;align-items:center;gap:7px"><div style="font-size:15px">❤️</div><div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:#FF5470">3</div></div>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">AudioPlayer · Chip · Toggle · Toast</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Nút phát là khối vuông bo 24px, 74px, có 4 vạch sóng dao động — cùng một hình dạng ở mọi loại câu hỏi để tay tìm được mà không cần đọc.</div>
+          <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+            <div style="width:74px;height:74px;border-radius:24px;background:#7C5CFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 0 #5837C9;flex-shrink:0" style-active="transform:translateY(3px);box-shadow:0 2px 0 #5837C9">
+              <div style="display:flex;align-items:flex-end;gap:3px;height:26px">
+                <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out infinite"></div>
+                <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.15s infinite"></div>
+                <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.3s infinite"></div>
+                <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.45s infinite"></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;flex:1;min-width:0">
+              <div style="display:flex;gap:7px;flex-wrap:wrap">
+                <div style="padding:9px 13px;border-radius:11px;background:#7C5CFF;color:#fff;font-size:12.5px;font-weight:600">Chip on</div>
+                <div style="padding:9px 13px;border-radius:11px;background:#241D38;color:#A79DC0;font-size:12.5px;font-weight:600">Chip off</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div style="font-size:12.5px;color:#CFC7E4">Toggle</div>
+                <div onClick="{{ toggle }}" style="width:48px;height:28px;border-radius:99px;padding:3px;cursor:pointer;flex-shrink:0;background:{{ toggleBg }}"><div style="width:22px;height:22px;border-radius:50%;background:#fff;transform:translateX({{ toggleX }})"></div></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:13px 15px;border-radius:15px;background:#2E2445;border:1.5px solid #7C5CFF;font-size:13px;color:#E4DFF2">Khoá. Học xong bài trước đã, đừng nhảy cóc.</div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">FeedbackFooter</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Không dùng modal. Chân màn đổi nền + viền theo kết quả, phần giải thích lý thuyết luôn nằm ở đây — đây là chỗ người học thực sự học được.</div>
+          <div style="margin-top:14px;padding:14px;border-radius:14px;background:rgba(61,220,151,0.08);border-top:1.5px solid rgba(61,220,151,0.3)">
+            <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;color:#3DDC97">Tai mày ổn đấy!</div>
+            <div style="margin-top:5px;font-size:12.5px;line-height:1.5;color:#E4DFF2">Đô → Sol = 7 nửa cung = quãng 5 đúng. Đây là bộ xương của mọi hợp âm.</div>
+          </div>
+          <div style="margin-top:10px;padding:14px;border-radius:14px;background:rgba(255,84,112,0.08);border-top:1.5px solid rgba(255,84,112,0.3)">
+            <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;color:#FF5470">Sai. Nghe lại đi.</div>
+            <div style="margin-top:5px;font-size:12.5px;line-height:1.5;color:#E4DFF2">Nốt giữa tụt nửa cung → hợp âm thứ. Trưởng và thứ chỉ khác nhau đúng 1 nửa cung.</div>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07);grid-column:1/-1">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">Keyboard — component riêng của hệ này</div>
+          <div style="margin-top:4px;font-size:12px;color:#8C82A8;line-height:1.5;max-width:760px;text-wrap:pretty">Luật cứng: phím trắng phải luôn sáng hơn phím đen, ở mọi trạng thái. Muốn nhấn scale thì <b style="color:#F4F1FB">làm mờ nốt ngoài scale</b>, không tô đậm nốt trong scale. Tên nốt tối thiểu 11px. Phím trắng chia đều 100/n, phím đen rộng 62% phím trắng, cao 60–62%, canh giữa mép phải phím trắng trước nó.</div>
+          <div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+            <sc-for list="{{ keyboards }}" as="kb" hint-placeholder-count="3">
+              <div>
+                <div style="font-size:11.5px;color:#A79DC0;margin-bottom:7px">{{ kb.label }}</div>
+                <div style="position:relative;height:132px;border-radius:11px;overflow:hidden;background:#0F0B1A">
+                  <sc-for list="{{ kb.whites }}" as="k" hint-placeholder-count="7">
+                    <div onClick="{{ k.tap }}" style="position:absolute;top:0;bottom:0;left:{{ k.left }}%;width:{{ k.width }}%;padding:1px;cursor:pointer">
+                      <div style="height:100%;border-radius:0 0 7px 7px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:11px;font-weight:600;background:{{ k.bg }};color:{{ k.fg }}">{{ k.label }}</div>
+                    </div>
+                  </sc-for>
+                  <sc-for list="{{ kb.blacks }}" as="k" hint-placeholder-count="5">
+                    <div onClick="{{ k.tap }}" style="position:absolute;top:0;height:62%;left:{{ k.left }}%;width:{{ k.width }}%;border-radius:0 0 5px 5px;z-index:2;cursor:pointer;background:{{ k.bg }}"></div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:7px;font-size:11px;color:#6E6690;line-height:1.4">{{ kb.note }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">Staff — khuông nhạc</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Đảo màu: giấy sáng trên app tối, vì nhạc giấy là nhạc giấy. 5 dòng cách nhau 12px, mỗi bậc nốt = 6px, đầu nốt 21×15 nghiêng −20°, đuôi 3×42px.</div>
+          <div style="margin-top:14px;padding:22px 18px;border-radius:16px;background:#F6F3FB;position:relative;height:150px">
+            <div style="position:absolute;left:18px;right:18px;top:26px;height:96px">
+              <sc-for list="{{ staffLines }}" as="l" hint-placeholder-count="5">
+                <div style="position:absolute;left:0;right:0;height:1.5px;background:#3A3355;top:{{ l.top }}px"></div>
+              </sc-for>
+              <div style="position:absolute;left:2px;top:-16px;font-size:74px;line-height:1;color:#241D38;font-family:Georgia,serif">𝄞</div>
+              <div style="position:absolute;left:132px;top:41px">
+                <div style="width:21px;height:15px;border-radius:50%;background:#7C5CFF;transform:rotate(-20deg)"></div>
+                <div style="position:absolute;left:19px;top:-38px;width:3px;height:42px;background:#7C5CFF"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E">ChordCard · StatCard · TabBar</div>
+          <div style="margin-top:4px;font-size:11.5px;color:#8C82A8;line-height:1.45">Hợp âm luôn đi kèm số La Mã. Tab bar 4 mục, active = lime, dùng ký hiệu hình học chứ không dùng emoji.</div>
+          <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+            <sc-for list="{{ chordCards }}" as="c" hint-placeholder-count="3">
+              <div style="padding:12px 10px;border-radius:15px;text-align:center;background:{{ c.bg }};border:1.5px solid {{ c.border }}">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:21px;color:{{ c.fg }}">{{ c.name }}</div>
+                <div style="font-size:11.5px;color:#A79DC0;margin-top:1px">{{ c.roman }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:9px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+            <sc-for list="{{ statCards }}" as="s" hint-placeholder-count="3">
+              <div style="padding:13px 10px;border-radius:16px;background:#241D38;text-align:center">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:21px;color:{{ s.color }}">{{ s.value }}</div>
+                <div style="font-size:11px;color:#A79DC0;margin-top:1px">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:12px;display:flex;padding:8px 6px;border-radius:15px;background:#181227;border-top:1px solid rgba(255,255,255,0.07)">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+              <div style="flex:1;text-align:center;padding:6px 2px">
+                <div style="font-size:18px;color:{{ t.color }}">{{ t.icon }}</div>
+                <div style="margin-top:3px;font-size:11px;font-weight:600;color:{{ t.color }}">{{ t.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">03 · LUẬT RIÊNG CỦA APP NHẠC</div>
+      <div style="margin-top:6px;font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Âm thanh, chữ nghĩa, tiếp cận</div>
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px">
+        <sc-for list="{{ ruleCards }}" as="r" hint-placeholder-count="4">
+          <div style="padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.07)">
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:#C6F24E">{{ r.title }}</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ r.items }}" as="i" hint-placeholder-count="4">
+                <div style="display:flex;gap:9px;font-size:12.5px;line-height:1.5;color:#CFC7E4">
+                  <div style="color:#7C5CFF;flex-shrink:0">—</div>
+                  <div style="text-wrap:pretty">{{ i }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">04 · TRIỂN KHAI</div>
+      <div style="margin-top:6px;font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Code</div>
+      <div style="margin-top:6px;font-size:13.5px;color:#A79DC0;line-height:1.55;max-width:660px;text-wrap:pretty">Token nằm ở <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#F4F1FB">sol/design-system/tokens/</span>: <a href="../tokens/sol-tokens.css">sol-tokens.css</a> (biến CSS + primitive) và <a href="../tokens/sol-tokens.json">sol-tokens.json</a> (cùng giá trị, dạng dữ liệu cho Tailwind / React Native / Style Dictionary). Đừng hardcode hex trong component — mọi giá trị đều phải trỏ về token.</div>
+
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ codeBlocks }}" as="c" hint-placeholder-count="3">
+          <div style="border-radius:16px;overflow:hidden;background:#15111F;border:1px solid rgba(255,255,255,0.09)">
+            <div style="padding:11px 15px;background:#1E1830;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#C6F24E;border-bottom:1px solid rgba(255,255,255,0.07)">{{ c.file }}</div>
+            <pre style="padding:15px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.65;color:#D8D2EA">{{ c.code }}</pre>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:28px">Design này lưu ở đâu, truy cập thế nào</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ files }}" as="f" hint-placeholder-count="5">
+          <div style="display:flex;gap:14px;padding:15px 16px;border-radius:16px;background:#1E1830;border:1px solid rgba(255,255,255,0.07);flex-wrap:wrap">
+            <div style="width:230px;flex-shrink:0">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#C6F24E">{{ f.name }}</div>
+              <div style="font-size:11px;color:#6E6690;margin-top:3px">{{ f.kind }}</div>
+            </div>
+            <div style="flex:1;min-width:220px;font-size:12.5px;line-height:1.55;color:#CFC7E4;text-wrap:pretty">{{ f.what }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:14px;padding:17px;border-radius:18px;background:#1E1830;border:1px solid rgba(124,92,255,0.4)">
+        <div style="font-size:14px;font-weight:600;color:#7C5CFF">Ba cách lấy về</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ access }}" as="a" hint-placeholder-count="3">
+            <div style="display:flex;gap:11px;font-size:12.5px;line-height:1.55;color:#E4DFF2">
+              <div style="width:20px;height:20px;border-radius:7px;background:#7C5CFF;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">{{ a.n }}</div>
+              <div style="text-wrap:pretty">{{ a.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1060}}">
+class Component extends DCLogic {
+  state = { toggle: true, kbFlash: null };
+
+  VN = ['Đô', 'Đô#', 'Rê', 'Rê#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'La#', 'Si'];
+
+  ac() {
+    if (!this._ac) { const A = window.AudioContext || window.webkitAudioContext; this._ac = new A(); }
+    if (this._ac.state === 'suspended') this._ac.resume();
+    return this._ac;
+  }
+  tone(midi, at, dur) {
+    const ac = this.ac(), t0 = ac.currentTime + at, f = 440 * Math.pow(2, (midi - 69) / 12);
+    const g = ac.createGain(), lp = ac.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2600;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(0.24, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.09, t0 + 0.18);
+    g.gain.exponentialRampToValueAtTime(0.0008, t0 + dur);
+    [['triangle', f, 1], ['sine', f * 2, 0.32], ['sine', f * 3, 0.12]].forEach(([type, freq, amp]) => {
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.type = type; o.frequency.value = freq; og.gain.value = amp;
+      o.connect(og); og.connect(lp); o.start(t0); o.stop(t0 + dur + 0.05);
+    });
+    lp.connect(g); g.connect(ac.destination);
+  }
+  hit(midi) {
+    this.tone(midi, 0, 1.0);
+    this.setState({ kbFlash: midi });
+    clearTimeout(this._ft);
+    this._ft = setTimeout(() => this.setState({ kbFlash: null }), 320);
+  }
+
+  keyboard(start, octaves, opts) {
+    const o = opts || {}, whiteOff = [0, 2, 4, 5, 7, 9, 11], blackAfter = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
+    const n = 7 * octaves, w = 100 / n, bw = w * 0.62, whites = [], blacks = [];
+    for (let oc = 0; oc < octaves; oc++) {
+      for (let i = 0; i < 7; i++) {
+        const idx = oc * 7 + i, midi = start + oc * 12 + whiteOff[i];
+        const on = o.on ? o.on(midi) : false, inScale = o.scale ? o.scale(midi) : true;
+        const flash = this.state.kbFlash === midi;
+        whites.push({
+          midi, left: idx * w, width: w, label: o.labels ? this.VN[((midi % 12) + 12) % 12] : '',
+          bg: on ? (o.onBg || '#7C5CFF') : flash ? '#CFC7E4' : inScale ? '#F6FAEC' : '#9E97B4',
+          fg: on ? '#fff' : inScale ? '#4E6B14' : '#5E5775',
+          tap: () => this.hit(midi)
+        });
+        if (blackAfter[i] !== undefined) {
+          const bm = start + oc * 12 + blackAfter[i], bon = o.on ? o.on(bm) : false;
+          const bIn = o.scale ? o.scale(bm) : true, bf = this.state.kbFlash === bm;
+          blacks.push({
+            midi: bm, left: (idx + 1) * w - bw / 2, width: bw,
+            bg: bon ? (o.onBg || '#7C5CFF') : bf ? '#4A4168' : bIn ? '#33285C' : '#191323',
+            tap: () => this.hit(bm)
+          });
+        }
+      }
+    }
+    return { whites, blacks };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const tokens = `:root {
+  /* surface */
+  --sol-bg: #130F1F;           --sol-surface: #1E1830;
+  --sol-surface-2: #241D38;    --sol-surface-3: #2C2442;
+  /* ink */
+  --sol-ink: #F4F1FB;          --sol-ink-mute: #A79DC0;
+  /* brand + semantic */
+  --sol-violet: #7C5CFF;       --sol-violet-press: #5837C9;
+  --sol-lime: #C6F24E;         --sol-lime-press: #96BC2C;
+  --sol-green: #3DDC97;        --sol-red: #FF5470;
+  --sol-amber: #FFB020;
+  /* type */
+  --sol-font-display: 'Baloo 2', system-ui, sans-serif;
+  --sol-font-text: 'Be Vietnam Pro', system-ui, sans-serif;
+  --sol-text-cta: 800 17px/1.2 var(--sol-font-display);
+  /* radius + lift */
+  --sol-radius-lg: 16px;       --sol-radius-xl: 18px;
+  --sol-lift-md: 0 5px 0;      --sol-press: 0 2px 0;
+}
+/* file đầy đủ: sol-tokens.css */`;
+
+    const btn = `/* Nút chính — mặt đáy đặc, nhấn là trồi xuống 3px */
+.sol-btn {
+  width: 100%; border: 0; cursor: pointer;
+  padding: 16px; border-radius: var(--sol-radius-xl);
+  font: var(--sol-text-cta); letter-spacing: .3px;
+  background: var(--sol-lime); color: #171227;
+  box-shadow: var(--sol-lift-md) var(--sol-lime-press);
+}
+.sol-btn:active {
+  transform: translateY(3px);
+  box-shadow: var(--sol-press) var(--sol-lime-press);
+}
+.sol-btn[disabled] {
+  background: var(--sol-surface-2); color: #5B5279;
+  box-shadow: var(--sol-lift-md) #191330;
+}`;
+
+    const react = `// OptionRow — 4 trạng thái, không hardcode hex
+const T = {
+  idle:    { bg: 'var(--sol-surface)',      line: 'var(--sol-border)' },
+  picked:  { bg: 'var(--sol-violet-tint)',  line: 'var(--sol-violet)' },
+  correct: { bg: 'var(--sol-green-tint)',   line: 'var(--sol-green)' },
+  wrong:   { bg: 'var(--sol-red-tint)',     line: 'var(--sol-red)' },
+};
+
+export function OptionRow({ label, keyLetter, state = 'idle', onPick }) {
+  const t = T[state];
+  return (
+    <button
+      onClick={onPick}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 13,
+        width: '100%', padding: 15, minHeight: 44,
+        borderRadius: 'var(--sol-radius-lg)',
+        background: t.bg, border: \`1.5px solid \${t.line}\`,
+        font: 'var(--sol-text-body)', color: 'var(--sol-ink)',
+      }}
+    >
+      <Badge state={state}>{keyLetter}</Badge>
+      {label}
+    </button>
+  );
+}`;
+
+    const tw = `// tailwind.config.js — sinh trực tiếp từ sol-tokens.json
+const t = require('./sol-tokens.json');
+
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        bg: t.color.surface.bg,
+        surface: t.color.surface.surface,
+        violet: t.color.brand.violet,
+        lime: t.color.brand.lime,
+        correct: t.color.semantic.correct,
+        wrong: t.color.semantic.wrong,
+        streak: t.color.semantic.streak,
+      },
+      borderRadius: t.radius,
+      spacing: t.space,
+      fontFamily: {
+        display: [t.font.display, 'system-ui'],
+        text: [t.font.text, 'system-ui'],
+      },
+      boxShadow: {
+        'lift-md': \`\${t.elevation.liftMd} \${t.color.brand.limePress}\`,
+      },
+    },
+  },
+};`;
+
+    const cmaj = [0, 2, 4, 5, 7, 9, 11], pent = [0, 2, 4, 7, 9];
+    const pc = m => ((m % 12) + 12) % 12;
+
+    return {
+      principles: [
+        { title: 'Tai trước, mắt sau', body: 'Mọi câu hỏi phát được âm thanh trước khi cần đọc chữ. Nút phát luôn cùng một hình dạng, cùng một chỗ.' },
+        { title: 'Nhấn được thì phải trồi', body: 'Chỉ vật bấm được có mặt đáy đặc. Không bóng mờ, không hover-only — thiết kế cho ngón tay.' },
+        { title: 'Sai là lúc dạy', body: 'Không bao giờ chỉ báo "sai". Chân màn luôn kèm một câu lý thuyết giải thích tại sao.' },
+        { title: 'Một hành động mỗi màn', body: 'Đúng một nút lime cho bước tiếp theo. Mọi thứ khác là ghost hoặc chip.' }
+      ],
+      colorGroups: [
+        { title: 'Surface', rule: 'Xếp theo độ sâu: bg → surface → surface-2 → surface-3. Không bao giờ nhảy cấp hay lồng cùng cấp vào nhau.', swatches: [
+          { token: '--sol-bg-deep', hex: '#0A0812', use: 'backdrop ngoài khung máy' },
+          { token: '--sol-bg', hex: '#130F1F', use: 'nền màn hình' },
+          { token: '--sol-surface', hex: '#1E1830', use: 'card, panel' },
+          { token: '--sol-surface-2', hex: '#241D38', use: 'chip, rãnh, card lồng' },
+          { token: '--sol-surface-3', hex: '#2C2442', use: 'badge, nền control' },
+          { token: '--sol-surface-nav', hex: '#181227', use: 'tab bar' }
+        ] },
+        { title: 'Ink', rule: 'Sáu bậc. Body dài dùng ink-soft chứ không dùng ink — đọc 3 dòng bằng màu trắng nhất là mỏi.', swatches: [
+          { token: '--sol-ink', hex: '#F4F1FB', use: 'tiêu đề, số' },
+          { token: '--sol-ink-soft', hex: '#E4DFF2', use: 'đoạn giải thích' },
+          { token: '--sol-ink-mute', hex: '#A79DC0', use: 'phụ đề, hint' },
+          { token: '--sol-ink-dim', hex: '#8C82A8', use: 'metadata' },
+          { token: '--sol-ink-faint', hex: '#6E6690', use: 'tab tắt, mục khoá' },
+          { token: '--sol-ink-disabled', hex: '#5B5279', use: 'chữ trên nút tắt' }
+        ] },
+        { title: 'Brand', rule: 'Violet = đang diễn ra (đang học, đang chọn, đang phát). Lime = hành động & thành quả. Hai màu này không thay nhau được.', swatches: [
+          { token: '--sol-violet', hex: '#7C5CFF', use: 'accent chính' },
+          { token: '--sol-violet-press', hex: '#5837C9', use: 'mặt đáy nút violet' },
+          { token: '--sol-violet-deep', hex: '#5B3FD6', use: 'gradient banner chương' },
+          { token: '--sol-lime', hex: '#C6F24E', use: 'CTA, XP, đã xong' },
+          { token: '--sol-lime-press', hex: '#96BC2C', use: 'mặt đáy nút lime' },
+          { token: '--sol-lime-ink', hex: '#171227', use: 'chữ trên lime' }
+        ] },
+        { title: 'Semantic', rule: 'Chỉ dùng cho phản hồi bài học và chỉ số. Green/red luôn đi kèm chữ, không bao giờ là tín hiệu màu đơn độc.', swatches: [
+          { token: '--sol-green', hex: '#3DDC97', use: 'đúng' },
+          { token: '--sol-green-tint', hex: 'rgba(61,220,151,0.14)', use: 'nền option đúng' },
+          { token: '--sol-red', hex: '#FF5470', use: 'sai, tim' },
+          { token: '--sol-red-tint', hex: 'rgba(255,84,112,0.14)', use: 'nền option sai' },
+          { token: '--sol-amber', hex: '#FFB020', use: 'streak' },
+          { token: '--sol-border', hex: 'rgba(255,255,255,0.07)', use: 'viền mặc định' }
+        ] },
+        { title: 'Nhạc cụ', rule: 'Nhóm duy nhất được phá luật "nền tối": phím đàn và giấy nhạc là vật thể thật, phải sáng.', swatches: [
+          { token: '--sol-key-white', hex: '#F6FAEC', use: 'phím trắng trong scale' },
+          { token: '--sol-key-white-off', hex: '#9E97B4', use: 'phím trắng bị dim' },
+          { token: '--sol-key-black', hex: '#33285C', use: 'phím đen' },
+          { token: '--sol-key-label', hex: '#4E6B14', use: 'tên nốt trên phím' },
+          { token: '--sol-staff-paper', hex: '#F6F3FB', use: 'giấy khuông nhạc' },
+          { token: '--sol-staff-line', hex: '#3A3355', use: 'dòng kẻ nhạc' }
+        ] }
+      ],
+      typeRows: [
+        { token: 'display-xl', spec: 'Baloo 2 · 700 · 30/1.15', font: "700 30px/1.15 'Baloo 2', cursive", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Ghê đấy!', use: 'tiêu đề màn kết quả' },
+        { token: 'display-l', spec: 'Baloo 2 · 700 · 25/1.2', font: "700 25px/1.2 'Baloo 2', cursive", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Hợp âm giọng Đô trưởng', use: 'tiêu đề tab' },
+        { token: 'display-m', spec: 'Baloo 2 · 700 · 22/1.25', font: "700 22px/1.25 'Baloo 2', cursive", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Nốt này là nốt nào?', use: 'câu hỏi bài học' },
+        { token: 'display-s', spec: 'Baloo 2 · 700 · 20/1.3', font: "700 20px/1.3 'Baloo 2', cursive", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Làm quen với nốt', use: 'tiêu đề card lớn' },
+        { token: 'numeric', spec: 'Baloo 2 · 800 · 22/1.1', font: "800 22px/1.1 'Baloo 2', cursive", color: '#C6F24E', ls: 'normal', tt: 'none', sample: '1.240', use: 'mọi con số' },
+        { token: 'cta', spec: 'Baloo 2 · 800 · 17 · +0.3', font: "800 17px/1.2 'Baloo 2', cursive", color: '#C6F24E', ls: '0.3px', tt: 'none', sample: 'Kiểm tra', use: 'chữ trong nút' },
+        { token: 'body-l', spec: 'Be Vietnam · 500 · 15/1.45', font: "500 15px/1.45 'Be Vietnam Pro', sans-serif", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Quãng 5 đúng (P5)', use: 'nhãn hàng, option' },
+        { token: 'body', spec: 'Be Vietnam · 500 · 14.5/1.35', font: "500 14.5px/1.35 'Be Vietnam Pro', sans-serif", color: '#F4F1FB', ls: 'normal', tt: 'none', sample: 'Nhớ mặt nốt trên khuông', use: 'nội dung mặc định' },
+        { token: 'body-s', spec: 'Be Vietnam · 400 · 13/1.5', font: "400 13px/1.5 'Be Vietnam Pro', sans-serif", color: '#E4DFF2', ls: 'normal', tt: 'none', sample: 'Đô → Sol = 7 nửa cung = quãng 5 đúng.', use: 'giải thích lý thuyết' },
+        { token: 'caption', spec: 'Be Vietnam · 400 · 12.5/1.45', font: "400 12.5px/1.45 'Be Vietnam Pro', sans-serif", color: '#A79DC0', ls: 'normal', tt: 'none', sample: 'Bài 3 / 6 · còn 10 phút hôm nay', use: 'phụ đề, hint' },
+        { token: 'eyebrow', spec: 'Be Vietnam · 600 · 11.5 · +1.2', font: "600 11.5px/1.3 'Be Vietnam Pro', sans-serif", color: '#7C5CFF', ls: '1.2px', tt: 'uppercase', sample: 'Logic vòng hợp âm', use: 'nhãn loại câu hỏi' }
+      ],
+      spaces: [['space-1', 4], ['space-2', 8], ['space-3', 12], ['space-4', 16], ['space-5', 20], ['space-6', 24], ['space-8', 32], ['space-12', 48]].map(([token, px]) => ({ token, px: px + 'px' })),
+      radii: [['xs', 8], ['sm', 11], ['md', 14], ['lg', 16], ['xl', 18], ['2xl', 24], ['3xl', 32], ['pill', 999]].map(([token, px]) => ({ token, px: px + 'px' })),
+      optionStates: [
+        { key: 'A', label: 'Chưa chọn — idle', bg: '#1E1830', border: 'rgba(255,255,255,0.07)', badgeBg: '#2C2442', badgeFg: '#8C82A8' },
+        { key: 'B', label: 'Đang chọn — picked', bg: 'rgba(124,92,255,0.16)', border: '#7C5CFF', badgeBg: '#7C5CFF', badgeFg: '#171227' },
+        { key: 'C', label: 'Đúng — correct', bg: 'rgba(61,220,151,0.14)', border: '#3DDC97', badgeBg: '#3DDC97', badgeFg: '#171227' },
+        { key: 'D', label: 'Sai — wrong', bg: 'rgba(255,84,112,0.14)', border: '#FF5470', badgeBg: '#FF5470', badgeFg: '#171227' }
+      ],
+      nodeStates: [
+        { icon: '♪', title: 'Đồ Rê Mi', sub: 'done · lime', bg: '#C6F24E', fg: '#171227', shadow: '#96BC2C', titleColor: '#F4F1FB', anim: 'none' },
+        { icon: '◐', title: 'Quãng cơ bản', sub: 'current · violet + solPulse', bg: '#7C5CFF', fg: '#fff', shadow: '#5837C9', titleColor: '#F4F1FB', anim: 'solPulse 2s ease-out infinite' },
+        { icon: '✦', title: 'Trưởng vs thứ', sub: 'locked · surface-2', bg: '#241D38', fg: '#5B5279', shadow: '#191330', titleColor: '#6E6690', anim: 'none' }
+      ],
+      keyboards: [
+        { label: 'Mặc định · 1 quãng tám · có tên nốt', note: 'Dùng khi cần bấm chọn nốt.', ...this.keyboard(60, 1, { labels: true }) },
+        { label: 'Highlight hợp âm (C = Đô–Mi–Sol)', note: 'on → violet. Chỉ dùng khi highlight ≤ 4 nốt.', ...this.keyboard(60, 1, { labels: true, on: m => [60, 64, 67].indexOf(m) >= 0 }) },
+        { label: 'Scale ngũ cung · dim nốt ngoài scale', note: 'Nhiều nốt thì DIM nốt ngoài, không tô nốt trong.', ...this.keyboard(60, 1, { labels: true, scale: m => pent.indexOf(pc(m)) >= 0 }) }
+      ],
+      staffLines: [0, 1, 2, 3, 4].map(i => ({ top: 12 + i * 12 })),
+      chordCards: [
+        { name: 'C', roman: 'I', bg: 'rgba(124,92,255,0.18)', border: '#7C5CFF', fg: '#fff' },
+        { name: 'G', roman: 'V', bg: '#241D38', border: 'rgba(255,255,255,0.07)', fg: '#CFC7E4' },
+        { name: 'Am', roman: 'vi', bg: '#241D38', border: 'rgba(255,255,255,0.07)', fg: '#CFC7E4' }
+      ],
+      statCards: [
+        { value: '+48', label: 'XP', color: '#C6F24E' },
+        { value: '80%', label: 'chính xác', color: '#3DDC97' },
+        { value: '13', label: 'ngày liền', color: '#FFB020' }
+      ],
+      tabs: [['♪', 'Học', true], ['◈', 'Hợp âm', false], ['▤', 'Đàn', false], ['◉', 'Tôi', false]].map(([icon, label, on]) => ({ icon, label, color: on ? '#C6F24E' : '#6E6690' })),
+      toggle: () => this.setState(st => ({ toggle: !st.toggle })),
+      toggleBg: s.toggle ? '#C6F24E' : '#2C2442',
+      toggleX: s.toggle ? '20px' : '0px',
+      ruleCards: [
+        { title: 'Âm thanh', items: [
+          'Một giọng đàn duy nhất: triangle (nền) + sine ×2 + sine ×3, qua lowpass 2600Hz. Không đổi timbre giữa các màn.',
+          'Envelope: attack 12ms → peak 0.24 → giữ 0.09 → tắt dần. Không có tiếng click, không có tiếng cắt cụt.',
+          'Nốt đơn 1.0s · hợp âm 1.4s · quãng cách nhau 0.55s · vòng hợp âm cách nhau 0.85s.',
+          'Phản hồi âm: đúng = arpeggio [72,76,79], sai = [61,60]. Ngắn 0.5s, không lấn tiếng nhạc.',
+          'AudioContext chỉ khởi tạo và resume trong sự kiện chạm của người dùng.'
+        ] },
+        { title: 'Giọng văn', items: [
+          'Gọi "mày / tao". Cà khịa được, nhưng không bao giờ nhục mạ người học.',
+          'Thuật ngữ tiếng Việt trước, tiếng Anh trong ngoặc: quãng 5 đúng (P5), hợp âm thứ (minor).',
+          'Câu giải thích tối đa 2 câu, luôn nói "tại sao nghe như thế", không chỉ nói tên.',
+          'Có prop playful để tắt giọng cà khịa cho môi trường lớp học — copy nghiêm túc là bản song song, không phải bản dịch.'
+        ] },
+        { title: 'Tiếp cận & kích cỡ', items: [
+          'Vùng chạm tối thiểu 44px. Tên nốt trên phím tối thiểu 11px.',
+          'Phím trắng luôn sáng hơn phím đen — kể cả khi bị dim.',
+          'Không dùng màu làm tín hiệu duy nhất: đúng/sai luôn có chữ + đổi viền.',
+          'Chữ body luôn ≥ 12.5px và tương phản ≥ 4.5:1 với nền surface.'
+        ] },
+        { title: 'Layout', items: [
+          'Lề ngang 20px cố định. Chừa 58px trên cho status bar, 34px dưới cho home indicator.',
+          'Chân màn có nút chính thì nút đó dính đáy, phần nội dung ở giữa mới cuộn.',
+          'Bài học không có tab bar — vào bài là chế độ toàn tâm, chỉ có ✕ để thoát.',
+          'Grid card 3 cột cho hợp âm và chỉ số, gap 9px.'
+        ] }
+      ],
+      codeBlocks: [
+        { file: 'sol-tokens.css — trích', code: tokens },
+        { file: 'Nút chính — CSS', code: btn },
+        { file: 'OptionRow — React', code: react },
+        { file: 'tailwind.config.js — sinh từ token JSON', code: tw }
+      ],
+      files: [
+        { name: 'design-system/Sol Design System.dc.html', kind: 'trang này · spec sống', what: 'Nguồn tham chiếu thị giác. Mọi component ở đây là bản thật, bấm được — mở là thấy trạng thái thực chứ không phải ảnh chụp.' },
+        { name: 'design-system/tokens/sol-tokens.css', kind: 'biến CSS + primitive', what: 'Thả vào project web thật, link một dòng rồi dùng var(--sol-*). Có sẵn .sol-btn / .sol-card / .sol-eyebrow và 3 keyframes hệ thống.' },
+        { name: 'design-system/DESIGN-SYSTEM.md', kind: 'bản rút gọn để đọc nhanh', what: '8 luật không được phá, bảng file, snippet khởi động. Đây là file mang vào repo cùng token để dev khác đọc trong 2 phút.' },
+        { name: 'design-system/tokens/sol-tokens.json', kind: 'token dạng dữ liệu', what: 'Cùng giá trị, dạng JSON — nạp vào tailwind.config.js, React Native StyleSheet, hoặc Style Dictionary để sinh ra Android/iOS.' },
+        { name: 'screens/Sol - App hoc nhac.dc.html', kind: 'prototype tham chiếu', what: 'App chạy thật: onboarding → lộ trình → bài học 5 dạng câu hỏi → kết quả, cùng tab hợp âm và đàn tự do. Dùng để xem token lắp lại thành sản phẩm ra sao.' },
+        { name: 'screens/ios-frame.jsx', kind: 'khung thiết bị', what: 'Chỉ để trình bày prototype trong khung iPhone. Không phải phần của design system, không mang vào code thật.' }
+      ],
+      access: [
+        { n: '1', text: 'Mở trong project này: toàn bộ nằm trong folder sol/ — design-system/ là hệ, screens/ là các màn, README.md là mục lục.' },
+        { n: '2', text: 'Tải về: nói "tải folder sol" là tao đóng gói cả folder thành zip, hoặc tải riêng từng file token.' },
+        { n: '3', text: 'Đưa vào repo: cấu trúc sol/ đã khớp với repo thật — copy design-system/tokens/ vào src/styles/ là chạy. Kết nối GitHub thì tao commit và map từng màn sang component.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
