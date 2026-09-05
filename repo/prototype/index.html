@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0A0812; }
+  * { box-sizing: border-box; }
+  a { color: #C6F24E; text-decoration: none; }
+  a:hover { color: #DCFB86; }
+  @keyframes solPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(124,92,255,0.55); } 50% { box-shadow: 0 0 0 14px rgba(124,92,255,0); } }
+  @keyframes solRise { from { transform: translateY(14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes solBar { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:radial-gradient(120% 90% at 50% 0%, #1A1430 0%, #0A0812 65%);font-family:'Be Vietnam Pro',system-ui,sans-serif">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="dark" hint-size="402px,874px">
+
+  <div style="height:100%;display:flex;flex-direction:column;background:#130F1F;color:#F4F1FB">
+
+    <sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Onboarding" style="flex:1;display:flex;flex-direction:column;padding:64px 22px 46px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;border-radius:11px;background:#7C5CFF;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff">♪</div>
+          <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:22px;letter-spacing:0.4px">Sol</div>
+        </div>
+
+        <sc-if value="{{ onbGoal }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:34px;animation:solRise 0.35s ease both">
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:29px;line-height:1.2;text-wrap:pretty">Mày muốn nghe được<br />cái gì trước?</div>
+            <div style="margin-top:8px;color:#A79DC0;font-size:14px">Chọn bao nhiêu cũng được. Tao xếp lộ trình theo đó.</div>
+            <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ goalRows }}" as="g" hint-placeholder-count="5">
+                <div onClick="{{ g.toggle }}" style="display:flex;align-items:center;gap:13px;padding:14px 15px;border-radius:16px;background:#1E1830;border:1.5px solid {{ g.border }};cursor:pointer" style-hover="border-color:#7C5CFF">
+                  <div style="width:22px;height:22px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#130F1F;background:{{ g.dot }}">{{ g.tick }}</div>
+                  <div style="font-size:14.5px;font-weight:500;line-height:1.35">{{ g.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ onbTime }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:34px;animation:solRise 0.35s ease both">
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:29px;line-height:1.2">Mỗi ngày bao lâu?</div>
+            <div style="margin-top:8px;color:#A79DC0;font-size:14px;text-wrap:pretty">Mày nói không có thời gian — nên tao để mức 10 phút. Đủ để tai lên, đủ ngắn để không viện cớ.</div>
+            <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ timeRows }}" as="t" hint-placeholder-count="3">
+                <div onClick="{{ t.pick }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px;border-radius:16px;background:#1E1830;border:1.5px solid {{ t.border }};cursor:pointer">
+                  <div>
+                    <div style="font-size:15px;font-weight:600">{{ t.label }}</div>
+                    <div style="font-size:12.5px;color:#A79DC0;margin-top:2px">{{ t.note }}</div>
+                  </div>
+                  <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:{{ t.dot }}">{{ t.mins }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="flex:1"></div>
+        <div onClick="{{ onbNext }}" style="margin-top:20px;padding:17px;border-radius:18px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;letter-spacing:0.3px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">{{ onbCta }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Home - lộ trình" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:58px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="font-size:17px">🔥</div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:#FFB020">{{ streak }}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="width:9px;height:9px;border-radius:3px;background:#C6F24E"></div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:#C6F24E">{{ xp }}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="font-size:15px">❤️</div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:#FF5470">{{ lives }}</div>
+          </div>
+        </div>
+
+        <div style="flex:1;overflow:auto;padding:16px 20px 24px">
+          <div style="padding:15px 17px;border-radius:18px;background:linear-gradient(135deg,#7C5CFF 0%,#5B3FD6 100%)">
+            <div style="font-size:11.5px;font-weight:600;letter-spacing:1.3px;color:rgba(255,255,255,0.75)">CHƯƠNG 1</div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:20px;color:#fff;margin-top:2px">Làm quen với nốt &amp; quãng</div>
+            <div style="margin-top:11px;height:7px;border-radius:99px;background:rgba(0,0,0,0.25);overflow:hidden">
+              <div style="height:100%;border-radius:99px;background:#C6F24E;width:{{ chapterPct }}"></div>
+            </div>
+            <div style="margin-top:7px;font-size:12px;color:rgba(255,255,255,0.8)">{{ chapterNote }}</div>
+          </div>
+
+          <div style="margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:14px;transform:translateX({{ n.dx }}px);padding:6px 0">
+                <div onClick="{{ n.tap }}" style="width:70px;height:70px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ n.bg }};box-shadow:0 6px 0 {{ n.shadow }};animation:{{ n.anim }}" style-active="transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,0.4)">
+                  <div style="font-size:26px;color:{{ n.fg }};font-family:'Baloo 2',cursive;font-weight:800">{{ n.icon }}</div>
+                </div>
+                <div style="min-width:0">
+                  <div style="font-size:14.5px;font-weight:600;color:{{ n.titleColor }};line-height:1.3">{{ n.title }}</div>
+                  <div style="font-size:12px;color:#8C82A8;margin-top:2px">{{ n.sub }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isChords }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Hợp âm" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:60px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Hợp âm giọng Đô trưởng</div>
+          <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">7 hợp âm này là toàn bộ nguyên liệu. Không có nốt thăng giáng nào.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+            <sc-for list="{{ chordCards }}" as="c" hint-placeholder-count="6">
+              <div onClick="{{ c.tap }}" style="padding:12px 10px;border-radius:15px;background:{{ c.bg }};border:1.5px solid {{ c.border }};cursor:pointer;text-align:center">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:21px;color:{{ c.fg }}">{{ c.name }}</div>
+                <div style="font-size:11.5px;color:#A79DC0;margin-top:1px">{{ c.roman }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:16px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div style="min-width:0">
+                <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:22px">{{ selChord.name }} <span style="font-size:14px;color:#7C5CFF">{{ selChord.roman }}</span></div>
+                <div style="font-size:12.5px;color:#A79DC0;margin-top:2px">{{ selChord.notes }} · {{ selChord.role }}</div>
+              </div>
+              <div onClick="{{ playSelChord }}" style="width:44px;height:44px;border-radius:14px;background:#7C5CFF;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer;box-shadow:0 4px 0 #5837C9" style-active="transform:translateY(2px);box-shadow:0 2px 0 #5837C9">▶</div>
+            </div>
+            <div style="margin-top:13px;position:relative;height:132px;border-radius:11px;overflow:hidden;background:#0F0B1A">
+              <sc-for list="{{ chordWhites }}" as="k" hint-placeholder-count="7">
+                <div onClick="{{ k.tap }}" style="position:absolute;top:0;bottom:0;left:{{ k.left }}%;width:{{ k.width }}%;padding:1px;cursor:pointer">
+                  <div style="height:100%;border-radius:0 0 7px 7px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:9.5px;font-weight:600;background:{{ k.bg }};color:{{ k.fg }}">{{ k.label }}</div>
+                </div>
+              </sc-for>
+              <sc-for list="{{ chordBlacks }}" as="k" hint-placeholder-count="5">
+                <div onClick="{{ k.tap }}" style="position:absolute;top:0;height:62%;left:{{ k.left }}%;width:{{ k.width }}%;border-radius:0 0 5px 5px;z-index:2;cursor:pointer;background:{{ k.bg }}"></div>
+              </sc-for>
+            </div>
+            <div style="margin-top:12px;font-size:13px;line-height:1.5;color:#CFC7E4;text-wrap:pretty">{{ selChord.why }}</div>
+          </div>
+
+          <div style="margin-top:16px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="display:flex;gap:7px">
+              <sc-for list="{{ progTabs }}" as="p" hint-placeholder-count="2">
+                <div onClick="{{ p.tap }}" style="flex:1;padding:9px;border-radius:11px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ p.bg }};color:{{ p.fg }}">{{ p.label }}</div>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px;font-family:'Baloo 2',cursive;font-weight:700;font-size:18px">{{ prog.title }}</div>
+            <div style="font-size:12.5px;color:#A79DC0;margin-top:2px;line-height:1.5;text-wrap:pretty">{{ prog.blurb }}</div>
+            <div style="margin-top:13px;display:flex;gap:8px">
+              <sc-for list="{{ progSteps }}" as="s" hint-placeholder-count="4">
+                <div onClick="{{ s.tap }}" style="flex:1;padding:11px 6px;border-radius:13px;text-align:center;cursor:pointer;background:{{ s.bg }};border:1.5px solid {{ s.border }}">
+                  <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:{{ s.fg }}">{{ s.name }}</div>
+                  <div style="font-size:10px;color:#A79DC0;margin-top:2px">{{ s.roman }}</div>
+                  <div style="font-size:9.5px;color:#8C82A8;margin-top:3px;line-height:1.25">{{ s.fn }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ playProg }}" style="margin-top:13px;padding:13px;border-radius:14px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #96BC2C" style-active="transform:translateY(2px);box-shadow:0 2px 0 #96BC2C">Nghe cả vòng</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPiano }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Đàn" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:60px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Đàn tự do</div>
+          <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">Bấm thử, nghe, đoán. Không tính điểm, không mất tim.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="display:flex;gap:7px">
+            <sc-for list="{{ scaleTabs }}" as="s" hint-placeholder-count="3">
+              <div onClick="{{ s.tap }}" style="flex:1;padding:10px 4px;border-radius:12px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</div>
+            </sc-for>
+          </div>
+          <div style="margin-top:14px;position:relative;height:200px;border-radius:13px;overflow:hidden;background:#0F0B1A">
+            <sc-for list="{{ freeWhites }}" as="k" hint-placeholder-count="14">
+              <div onClick="{{ k.tap }}" style="position:absolute;top:0;bottom:0;left:{{ k.left }}%;width:{{ k.width }}%;padding:1px;cursor:pointer">
+                <div style="height:100%;border-radius:0 0 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:8.5px;font-weight:600;background:{{ k.bg }};color:{{ k.fg }}">{{ k.label }}</div>
+              </div>
+            </sc-for>
+            <sc-for list="{{ freeBlacks }}" as="k" hint-placeholder-count="10">
+              <div onClick="{{ k.tap }}" style="position:absolute;top:0;height:60%;left:{{ k.left }}%;width:{{ k.width }}%;border-radius:0 0 4px 4px;z-index:2;cursor:pointer;background:{{ k.bg }}"></div>
+            </sc-for>
+          </div>
+          <div style="margin-top:13px;padding:14px 15px;border-radius:16px;background:#1E1830;font-size:13px;line-height:1.55;color:#CFC7E4;text-wrap:pretty">{{ scaleNote }}</div>
+          <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-radius:16px;background:#1E1830">
+            <div style="font-size:13.5px;font-weight:500">Hiện tên nốt trên phím</div>
+            <div onClick="{{ toggleNames }}" style="width:48px;height:28px;border-radius:99px;padding:3px;cursor:pointer;background:{{ namesTrackBg }}">
+              <div style="width:22px;height:22px;border-radius:50%;background:#fff;transform:translateX({{ namesKnobX }})"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Hồ sơ" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:60px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Tai của mày</div>
+          <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">Số 0 tuyệt đối → Level 3. Không tệ.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+            <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+              <div style="padding:13px 10px;border-radius:16px;background:#1E1830;text-align:center">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:22px;color:{{ s.color }}">{{ s.value }}</div>
+                <div style="font-size:11px;color:#A79DC0;margin-top:1px">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:16px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="font-size:14px;font-weight:600">Tuần này</div>
+            <div style="margin-top:12px;display:flex;justify-content:space-between;gap:5px">
+              <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+                <div style="flex:1;text-align:center">
+                  <div style="height:34px;border-radius:9px;background:{{ d.bg }};display:flex;align-items:center;justify-content:center;font-size:12px;color:{{ d.fg }}">{{ d.mark }}</div>
+                  <div style="font-size:10.5px;color:#8C82A8;margin-top:4px">{{ d.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="font-size:14px;font-weight:600">Nghe được tới đâu</div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ skills }}" as="s" hint-placeholder-count="3">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12.5px">
+                    <div style="color:#CFC7E4">{{ s.label }}</div>
+                    <div style="color:#A79DC0">{{ s.pct }}</div>
+                  </div>
+                  <div style="margin-top:6px;height:8px;border-radius:99px;background:#100C1C;overflow:hidden">
+                    <div style="height:100%;border-radius:99px;background:{{ s.color }};width:{{ s.pct }}"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ meMenu }}" as="m" hint-placeholder-count="3">
+              <div onClick="{{ m.tap }}" style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:16px;background:#1E1830;cursor:pointer;border:1.5px solid transparent" style-hover="border-color:#7C5CFF">
+                <div style="width:38px;height:38px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;background:{{ m.bg }};color:{{ m.fg }}">{{ m.icon }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14.5px;font-weight:600">{{ m.label }}</div>
+                  <div style="font-size:11.5px;color:#8C82A8;margin-top:2px">{{ m.sub }}</div>
+                </div>
+                <div style="font-size:15px;color:#5B5279">›</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSongs }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Thư viện bài hát" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:60px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Bài thật dùng vòng gì</div>
+          <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">Bấm nghe vòng hợp âm tách khỏi bài. Nghe trần như này mới nhận ra nó.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ songRows }}" as="s" hint-placeholder-count="4">
+              <div onClick="{{ s.tap }}" style="padding:14px 15px;border-radius:16px;cursor:pointer;background:{{ s.bg }};border:1.5px solid {{ s.border }}">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <div style="min-width:0">
+                    <div style="font-size:14.5px;font-weight:600;line-height:1.3">{{ s.title }}</div>
+                    <div style="font-size:11.5px;color:#8C82A8;margin-top:2px">{{ s.artist }} · {{ s.key }}</div>
+                  </div>
+                  <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:12px;color:#7C5CFF;flex-shrink:0">{{ s.roman }}</div>
+                </div>
+                <sc-if value="{{ s.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:12px;animation:solRise 0.25s ease both">
+                    <div style="display:flex;gap:7px">
+                      <sc-for list="{{ s.chips }}" as="c" hint-placeholder-count="4">
+                        <div onClick="{{ c.tap }}" style="flex:1;padding:11px 4px;border-radius:12px;text-align:center;background:#241D38;cursor:pointer">
+                          <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:16px">{{ c.name }}</div>
+                          <div style="font-size:9.5px;color:#8C82A8;margin-top:1px">{{ c.roman }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="margin-top:10px;font-size:12.5px;line-height:1.5;color:#CFC7E4;text-wrap:pretty">{{ s.note }}</div>
+                    <div onClick="{{ s.play }}" style="margin-top:11px;padding:12px;border-radius:13px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:14.5px;cursor:pointer;box-shadow:0 4px 0 #96BC2C" style-active="transform:translateY(2px);box-shadow:0 2px 0 #96BC2C">Nghe cả vòng</div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBrief }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Chi tiết bài học" style="flex:1;display:flex;flex-direction:column">
+        <div style="padding:58px 20px 0">
+          <div onClick="{{ closeBrief }}" style="font-size:20px;color:#8C82A8;cursor:pointer;line-height:1;width:32px">✕</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:14px 22px 20px">
+          <div style="width:78px;height:78px;border-radius:50%;background:#7C5CFF;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;font-family:'Baloo 2',cursive;font-weight:800;box-shadow:0 6px 0 #5837C9">{{ brief.icon }}</div>
+          <div style="margin-top:16px;font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">BÀI {{ brief.no }} · CHƯƠNG 1</div>
+          <div style="margin-top:5px;font-family:'Baloo 2',cursive;font-weight:700;font-size:27px;line-height:1.2;text-wrap:pretty">{{ brief.title }}</div>
+          <div style="margin-top:9px;font-size:13.5px;line-height:1.55;color:#CFC7E4;text-wrap:pretty">{{ brief.why }}</div>
+          <div style="margin-top:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+            <sc-for list="{{ brief.stats }}" as="s" hint-placeholder-count="3">
+              <div style="padding:13px 8px;border-radius:16px;background:#1E1830;text-align:center">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:20px;color:{{ s.color }}">{{ s.value }}</div>
+                <div style="font-size:10.5px;color:#A79DC0;margin-top:2px">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:14px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">MÀY SẼ LÀM GÌ</div>
+            <div style="margin-top:11px;display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ brief.steps }}" as="st" hint-placeholder-count="4">
+                <div style="display:flex;gap:11px;align-items:flex-start">
+                  <div style="width:21px;height:21px;border-radius:7px;background:#2C2442;color:#A79DC0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">{{ st.n }}</div>
+                  <div style="font-size:13px;line-height:1.45;color:#E4DFF2;text-wrap:pretty">{{ st.text }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="padding:14px 22px 40px;border-top:1px solid rgba(255,255,255,0.07)">
+          <div onClick="{{ briefStart }}" style="padding:17px;border-radius:18px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;letter-spacing:0.3px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">{{ brief.cta }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Ôn lại câu sai" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:58px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:flex-start;gap:13px">
+          <div onClick="{{ backToMe }}" style="font-size:20px;color:#8C82A8;cursor:pointer;line-height:1.2">‹</div>
+          <div style="min-width:0">
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Ôn lại</div>
+            <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">Câu sai quay lại sau 1 ngày, rồi 3 ngày, rồi 1 tuần. Sai lần nữa thì đếm lại từ đầu.</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <sc-if value="{{ hasMistakes }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;gap:9px">
+                <sc-for list="{{ reviewBuckets }}" as="b" hint-placeholder-count="3">
+                  <div style="flex:1;padding:13px 8px;border-radius:16px;background:#1E1830;text-align:center">
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:20px;color:{{ b.color }}">{{ b.n }}</div>
+                    <div style="font-size:10.5px;color:#A79DC0;margin-top:2px">{{ b.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ mistakeRows }}" as="m" hint-placeholder-count="3">
+                  <div onClick="{{ m.tap }}" style="padding:14px 15px;border-radius:16px;background:#1E1830;border-left:3px solid #FF5470;cursor:pointer">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                      <div style="font-size:10.5px;font-weight:600;letter-spacing:1px;color:#FF5470">{{ m.tag }}</div>
+                      <div style="font-size:10.5px;color:#8C82A8">ôn {{ m.due }}</div>
+                    </div>
+                    <div style="margin-top:5px;font-size:13.5px;font-weight:500;line-height:1.4;text-wrap:pretty">{{ m.prompt }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div onClick="{{ startReview }}" style="margin-top:16px;padding:16px;border-radius:17px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Ôn {{ mistakeCount }} câu ngay</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noMistakes }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:46px 18px;text-align:center">
+              <div style="margin:0 auto;width:76px;height:76px;border-radius:26px;background:#1E1830;display:flex;align-items:center;justify-content:center;font-size:32px;color:#3DDC97">✓</div>
+              <div style="margin-top:18px;font-family:'Baloo 2',cursive;font-weight:700;font-size:21px">Sạch sẽ</div>
+              <div style="margin-top:7px;font-size:13px;line-height:1.55;color:#A79DC0;text-wrap:pretty">Chưa có câu nào sai để ôn. Học thêm một bài rồi quay lại — sai vài câu mới có gì mà ôn.</div>
+              <div onClick="{{ backToHome }}" style="margin-top:20px;display:inline-block;padding:13px 22px;border-radius:15px;background:#241D38;color:#CFC7E4;font-size:13.5px;font-weight:600;cursor:pointer">Về lộ trình</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBadges }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Thành tích" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:58px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:flex-start;gap:13px">
+          <div onClick="{{ backToMe }}" style="font-size:20px;color:#8C82A8;cursor:pointer;line-height:1.2">‹</div>
+          <div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Thành tích</div>
+            <div style="font-size:12.5px;color:#A79DC0;margin-top:3px">{{ badgeCount }} / 8 mở. Huy hiệu mở bằng số lần đúng, không mở bằng tiền.</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <sc-for list="{{ badgeCards }}" as="b" hint-placeholder-count="8">
+              <div style="padding:16px 13px;border-radius:18px;text-align:center;background:{{ b.bg }};border:1.5px solid {{ b.border }}">
+                <div style="margin:0 auto;width:52px;height:52px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:24px;background:{{ b.iconBg }};color:{{ b.iconFg }}">{{ b.icon }}</div>
+                <div style="margin-top:10px;font-family:'Baloo 2',cursive;font-weight:700;font-size:14.5px;color:{{ b.nameColor }};line-height:1.25">{{ b.name }}</div>
+                <div style="margin-top:3px;font-size:11px;color:#8C82A8;line-height:1.35">{{ b.desc }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Cài đặt" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:58px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:flex-start;gap:13px">
+          <div onClick="{{ backToMe }}" style="font-size:20px;color:#8C82A8;cursor:pointer;line-height:1.2">‹</div>
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:25px">Cài đặt</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 26px">
+          <div style="padding:16px;border-radius:18px;background:#1E1830">
+            <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">GỌI TÊN NỐT</div>
+            <div style="margin-top:11px;display:flex;gap:7px">
+              <sc-for list="{{ namingTabs }}" as="n" hint-placeholder-count="3">
+                <div onClick="{{ n.tap }}" style="flex:1;padding:11px 4px;border-radius:12px;text-align:center;cursor:pointer;background:{{ n.bg }};color:{{ n.fg }}">
+                  <div style="font-size:13px;font-weight:600">{{ n.label }}</div>
+                  <div style="font-size:10.5px;opacity:0.75;margin-top:2px">{{ n.sample }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">ÂM LƯỢNG ĐÀN</div>
+              <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:#C6F24E">{{ volPct }}</div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:6px;align-items:flex-end">
+              <sc-for list="{{ volSteps }}" as="v" hint-placeholder-count="10">
+                <div onClick="{{ v.tap }}" style="flex:1;height:{{ v.h }};border-radius:5px;cursor:pointer;background:{{ v.bg }}"></div>
+              </sc-for>
+            </div>
+            <div onClick="{{ testVol }}" style="margin-top:13px;padding:11px;border-radius:13px;background:#241D38;text-align:center;font-size:13px;color:#CFC7E4;cursor:pointer">▶ Thử nghe</div>
+          </div>
+
+          <div style="margin-top:12px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="min-width:0">
+                <div style="font-size:14px;font-weight:600">Nhắc học hàng ngày</div>
+                <div style="font-size:11.5px;color:#8C82A8;margin-top:2px">{{ remindNote }}</div>
+              </div>
+              <div onClick="{{ toggleRemind }}" style="width:48px;height:28px;border-radius:99px;padding:3px;cursor:pointer;flex-shrink:0;background:{{ remindTrackBg }}">
+                <div style="width:22px;height:22px;border-radius:50%;background:#fff;transform:translateX({{ remindKnobX }})"></div>
+              </div>
+            </div>
+            <sc-if value="{{ remind }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:13px;display:flex;gap:7px;animation:solRise 0.2s ease both">
+                <sc-for list="{{ timeChips }}" as="t" hint-placeholder-count="4">
+                  <div onClick="{{ t.tap }}" style="flex:1;padding:10px 3px;border-radius:11px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</div>
+                </sc-for>
+              </div>
+              <div onClick="{{ openRemind }}" style="margin-top:11px;padding:11px;border-radius:13px;background:#241D38;text-align:center;font-size:13px;color:#CFC7E4;cursor:pointer">Xem lời nhắc trông thế nào</div>
+            </sc-if>
+          </div>
+
+          <div style="margin-top:12px;padding:16px;border-radius:18px;background:#1E1830">
+            <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">TRẠNG THÁI RỌNG</div>
+            <div style="margin-top:5px;font-size:11.5px;color:#8C82A8;line-height:1.45">Bốn màn dev hay quên. Bấm để xem.</div>
+            <div style="margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ sysTriggers }}" as="t" hint-placeholder-count="4">
+                <div onClick="{{ t.tap }}" style="padding:12px 8px;border-radius:13px;background:#241D38;text-align:center;font-size:12px;font-weight:600;color:#CFC7E4;cursor:pointer" style-hover="background:#2C2442">{{ t.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isRemind }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Nhắc nhở hàng ngày" style="flex:1;display:flex;flex-direction:column;padding:70px 22px 44px">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+          <div style="padding:15px 16px;border-radius:18px;background:#1E1830;border:1px solid rgba(255,255,255,0.12);display:flex;gap:12px;animation:solRise 0.3s ease both">
+            <div style="width:38px;height:38px;border-radius:11px;background:#7C5CFF;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff">♪</div>
+            <div style="min-width:0">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <div style="font-size:13.5px;font-weight:600">Sol</div>
+                <div style="font-size:11px;color:#8C82A8">{{ remindAt }}</div>
+              </div>
+              <div style="margin-top:3px;font-size:13px;line-height:1.45;color:#E4DFF2;text-wrap:pretty">{{ remindCopy }}</div>
+            </div>
+          </div>
+          <div style="margin-top:34px;font-family:'Baloo 2',cursive;font-weight:700;font-size:27px;line-height:1.2;text-wrap:pretty">{{ remindTitle }}</div>
+          <div style="margin-top:9px;font-size:13.5px;line-height:1.55;color:#A79DC0;text-wrap:pretty">{{ remindBody }}</div>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ remindFacts }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;font-size:13px;line-height:1.5;color:#CFC7E4">
+                <div style="color:#C6F24E;flex-shrink:0">—</div>
+                <div style="text-wrap:pretty">{{ r }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div onClick="{{ allowRemind }}" style="margin-top:20px;padding:17px;border-radius:18px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Cho phép nhắc {{ remindAt }}</div>
+        <div onClick="{{ skipRemind }}" style="margin-top:10px;padding:13px;text-align:center;font-size:13.5px;color:#8C82A8;cursor:pointer">Để sau</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLesson }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Bài học - luyện tai" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div style="padding:58px 18px 12px;display:flex;align-items:center;gap:13px">
+          <div onClick="{{ quitLesson }}" style="font-size:20px;color:#8C82A8;cursor:pointer;line-height:1">✕</div>
+          <div style="flex:1;height:12px;border-radius:99px;background:#241D38;overflow:hidden">
+            <div style="height:100%;border-radius:99px;background:#C6F24E;width:{{ lessonPct }}"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="font-size:14px">❤️</div>
+            <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:#FF5470">{{ lives }}</div>
+          </div>
+        </div>
+
+        <div style="flex:1;overflow:auto;padding:12px 20px 20px">
+          <div style="font-size:11.5px;font-weight:600;letter-spacing:1.2px;color:#7C5CFF">{{ q.tag }}</div>
+          <div style="margin-top:6px;font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;line-height:1.25;text-wrap:pretty">{{ q.prompt }}</div>
+
+          <sc-if value="{{ q.hasPlayer }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:18px;display:flex;align-items:center;gap:12px">
+              <div onClick="{{ playQuestion }}" style="width:74px;height:74px;border-radius:24px;background:#7C5CFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 0 #5837C9;flex-shrink:0" style-active="transform:translateY(3px);box-shadow:0 2px 0 #5837C9">
+                <div style="display:flex;align-items:flex-end;gap:3px;height:26px">
+                  <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out infinite"></div>
+                  <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.15s infinite"></div>
+                  <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.3s infinite"></div>
+                  <div style="width:4px;height:100%;border-radius:9px;background:#fff;animation:solBar 0.9s ease-in-out 0.45s infinite"></div>
+                </div>
+              </div>
+              <div style="min-width:0">
+                <div style="font-size:13.5px;font-weight:600">Bấm để nghe lại</div>
+                <div style="font-size:12px;color:#A79DC0;margin-top:3px;line-height:1.4">{{ q.hint }}</div>
+                <sc-if value="{{ q.hasRef }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ playRef }}" style="margin-top:8px;display:inline-block;padding:7px 12px;border-radius:10px;background:#241D38;font-size:12px;color:#CFC7E4;cursor:pointer">♪ Nghe nốt Đô mẫu</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isStaff }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;padding:22px 18px;border-radius:18px;background:#F6F3FB;position:relative;height:150px">
+              <div style="position:absolute;left:18px;right:18px;top:26px;height:96px">
+                <sc-for list="{{ staffLines }}" as="l" hint-placeholder-count="5">
+                  <div style="position:absolute;left:0;right:0;height:1.5px;background:#3A3355;top:{{ l.top }}px"></div>
+                </sc-for>
+                <div style="position:absolute;left:2px;top:-16px;font-size:74px;line-height:1;color:#241D38;font-family:Georgia,serif">𝄞</div>
+                <div style="position:absolute;left:132px;top:{{ staffNoteTop }}px">
+                  <div style="width:21px;height:15px;border-radius:50%;background:#7C5CFF;transform:rotate(-20deg)"></div>
+                  <div style="position:absolute;left:19px;top:-38px;width:3px;height:42px;background:#7C5CFF"></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isProg }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px;display:flex;align-items:center;gap:8px">
+              <sc-for list="{{ q.progChips }}" as="c" hint-placeholder-count="4">
+                <div style="flex:1;padding:15px 6px;border-radius:15px;text-align:center;background:{{ c.bg }};border:1.5px dashed {{ c.border }}">
+                  <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:{{ c.fg }}">{{ c.name }}</div>
+                  <div style="font-size:10.5px;color:#A79DC0;margin-top:2px">{{ c.roman }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ playQuestion }}" style="margin-top:11px;padding:11px;border-radius:13px;background:#241D38;text-align:center;font-size:13px;color:#CFC7E4;cursor:pointer">▶ Nghe 3 hợp âm đầu</div>
+          </sc-if>
+
+          <sc-if value="{{ q.isKeys }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;position:relative;height:172px;border-radius:14px;overflow:hidden;background:#0F0B1A">
+              <sc-for list="{{ lessonWhites }}" as="k" hint-placeholder-count="7">
+                <div onClick="{{ k.tap }}" style="position:absolute;top:0;bottom:0;left:{{ k.left }}%;width:{{ k.width }}%;padding:1.5px;cursor:pointer">
+                  <div style="height:100%;border-radius:0 0 8px 8px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px;font-size:10.5px;font-weight:600;background:{{ k.bg }};color:{{ k.fg }}">{{ k.label }}</div>
+                </div>
+              </sc-for>
+              <sc-for list="{{ lessonBlacks }}" as="k" hint-placeholder-count="5">
+                <div onClick="{{ k.tap }}" style="position:absolute;top:0;height:62%;left:{{ k.left }}%;width:{{ k.width }}%;border-radius:0 0 6px 6px;z-index:2;cursor:pointer;background:{{ k.bg }}"></div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isFill }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;padding:22px 18px;border-radius:18px;background:#F6F3FB;position:relative;height:164px">
+              <div style="position:absolute;left:18px;right:18px;top:32px;height:96px">
+                <sc-for list="{{ staffLines }}" as="l" hint-placeholder-count="5">
+                  <div style="position:absolute;left:0;right:0;height:1.5px;background:#3A3355;top:{{ l.top }}px"></div>
+                </sc-for>
+                <div style="position:absolute;left:2px;top:-16px;font-size:74px;line-height:1;color:#241D38;font-family:Georgia,serif">𝄞</div>
+                <sc-for list="{{ fillSlots }}" as="sl" hint-placeholder-count="9">
+                  <div onClick="{{ sl.tap }}" style="position:absolute;left:118px;width:52px;height:12px;cursor:pointer;top:{{ sl.top }}px;display:flex;align-items:center;justify-content:center">
+                    <div style="width:21px;height:15px;border-radius:50%;transform:rotate(-20deg);background:{{ sl.bg }};border:1.5px solid {{ sl.border }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="position:absolute;left:18px;bottom:8px;font-size:10.5px;color:#6C6288">Bấm vào vị trí trên khuông</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isProg4 }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px">
+              <div style="display:flex;gap:8px">
+                <sc-for list="{{ prog4Slots }}" as="sl" hint-placeholder-count="4">
+                  <div onClick="{{ sl.tap }}" style="flex:1;height:66px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:{{ sl.bg }};border:1.5px {{ sl.style }} {{ sl.border }}">
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;color:{{ sl.fg }}">{{ sl.name }}</div>
+                    <div style="font-size:9.5px;color:#8C82A8;margin-top:2px">{{ sl.roman }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:13px;font-size:11.5px;font-weight:600;letter-spacing:1px;color:#8C82A8">CHỌN TỪ ĐÂY</div>
+              <div style="margin-top:9px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+                <sc-for list="{{ prog4Pool }}" as="p" hint-placeholder-count="6">
+                  <div onClick="{{ p.tap }}" style="padding:12px 6px;border-radius:13px;text-align:center;cursor:pointer;background:{{ p.bg }};opacity:{{ p.op }}">
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:#F4F1FB">{{ p.name }}</div>
+                    <div style="font-size:9.5px;color:#8C82A8;margin-top:1px">{{ p.roman }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div onClick="{{ playQuestion }}" style="margin-top:12px;padding:11px;border-radius:13px;background:#241D38;text-align:center;font-size:13px;color:#CFC7E4;cursor:pointer">▶ Nghe lại cả 4 hợp âm</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isMatch }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px;display:flex;gap:11px">
+              <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ matchNames }}" as="n" hint-placeholder-count="3">
+                  <div onClick="{{ n.tap }}" style="height:76px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:{{ n.bg }};border:1.5px solid {{ n.border }}">
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:20px;color:{{ n.fg }}">{{ n.name }}</div>
+                    <div style="font-size:10px;color:#8C82A8;margin-top:2px">{{ n.state }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ matchShapes }}" as="sh" hint-placeholder-count="3">
+                  <div onClick="{{ sh.tap }}" style="height:76px;border-radius:15px;padding:6px;cursor:pointer;background:{{ sh.bg }};border:1.5px solid {{ sh.border }}">
+                    <div style="position:relative;height:100%;border-radius:9px;overflow:hidden;background:#0F0B1A">
+                      <sc-for list="{{ sh.whites }}" as="k" hint-placeholder-count="7">
+                        <div style="position:absolute;top:0;bottom:0;left:{{ k.left }}%;width:{{ k.width }}%;padding:1px">
+                          <div style="height:100%;border-radius:0 0 4px 4px;background:{{ k.bg }}"></div>
+                        </div>
+                      </sc-for>
+                      <sc-for list="{{ sh.blacks }}" as="k" hint-placeholder-count="5">
+                        <div style="position:absolute;top:0;height:60%;left:{{ k.left }}%;width:{{ k.width }}%;border-radius:0 0 3px 3px;z-index:2;background:{{ k.bg }}"></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="margin-top:11px;font-size:12px;color:#8C82A8;line-height:1.45">{{ matchHint }}</div>
+          </sc-if>
+
+          <sc-if value="{{ q.isRhythm }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px">
+              <div style="display:flex;gap:8px">
+                <sc-for list="{{ beatBoxes }}" as="b" hint-placeholder-count="4">
+                  <div style="flex:1;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:{{ b.bg }};border:1.5px solid {{ b.border }}">
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:{{ b.fg }}">{{ b.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:9px">
+                <div onClick="{{ playQuestion }}" style="width:74px;height:74px;border-radius:22px;flex-shrink:0;background:#241D38;display:flex;align-items:center;justify-content:center;font-size:19px;color:#CFC7E4;cursor:pointer;box-shadow:0 4px 0 #191330" style-active="transform:translateY(2px);box-shadow:0 2px 0 #191330">▶</div>
+                <div onClick="{{ tapBeat }}" style="flex:1;height:74px;border-radius:22px;background:#7C5CFF;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 0 #5837C9" style-active="transform:translateY(3px);box-shadow:0 2px 0 #5837C9">
+                  <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;color:#fff">VỖ</div>
+                  <div style="font-size:10.5px;color:rgba(255,255,255,0.75);margin-top:1px">{{ tapCount }}</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;padding:13px 15px;border-radius:15px;background:#1E1830;display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:12.5px;color:#A79DC0">Lệch trung bình</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:{{ offColor }}">{{ offLabel }}</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.isSing }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div onClick="{{ playQuestion }}" style="width:70px;height:70px;border-radius:22px;flex-shrink:0;background:#241D38;display:flex;align-items:center;justify-content:center;font-size:24px;color:#CFC7E4;cursor:pointer;box-shadow:0 4px 0 #191330" style-active="transform:translateY(2px);box-shadow:0 2px 0 #191330">♪</div>
+                <div onClick="{{ micToggle }}" style="flex:1;height:70px;border-radius:22px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;background:{{ micBg }};box-shadow:0 5px 0 {{ micShadow }}" style-active="transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.35)">
+                  <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;color:{{ micFg }}">{{ micLabel }}</div>
+                </div>
+              </div>
+              <div style="margin-top:14px;padding:18px 16px;border-radius:18px;background:#1E1830">
+                <div style="position:relative;height:56px">
+                  <div style="position:absolute;left:0;right:0;top:26px;height:4px;border-radius:99px;background:#100C1C"></div>
+                  <div style="position:absolute;left:calc(50% - 22px);width:44px;top:20px;height:16px;border-radius:99px;background:rgba(61,220,151,0.22)"></div>
+                  <div style="position:absolute;left:50%;top:8px;width:2px;height:40px;background:#3DDC97"></div>
+                  <div style="position:absolute;top:14px;left:{{ needleLeft }};width:5px;height:28px;border-radius:99px;background:{{ needleColor }}"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10.5px;color:#6E6690">
+                  <div>−100¢</div><div style="color:#3DDC97">đúng</div><div>+100¢</div>
+                </div>
+                <div style="margin-top:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+                  <div>
+                    <div style="font-size:11.5px;color:#A79DC0">Mày đang hát</div>
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:24px;color:{{ needleColor }};line-height:1.15">{{ singNote }}</div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:11.5px;color:#A79DC0">Lệch tốt nhất</div>
+                    <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:24px;color:{{ centsColor }};line-height:1.15">{{ centsLabel }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ q.hasOptions }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+                <div onClick="{{ o.tap }}" style="display:flex;align-items:center;gap:13px;padding:15px 15px;border-radius:16px;cursor:pointer;background:{{ o.bg }};border:1.5px solid {{ o.border }}">
+                  <div style="width:26px;height:26px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:{{ o.badgeBg }};color:{{ o.badgeFg }}">{{ o.key }}</div>
+                  <div style="font-size:14.5px;font-weight:500;line-height:1.35;color:{{ o.fg }}">{{ o.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="padding:14px 20px 40px;border-top:1px solid {{ footBorder }};background:{{ footBg }}">
+          <sc-if value="{{ checked }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:solRise 0.25s ease both">
+              <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:{{ verdictColor }}">{{ verdict }}</div>
+              <div style="margin-top:5px;font-size:13px;line-height:1.5;color:#E4DFF2;text-wrap:pretty">{{ q.explain }}</div>
+            </div>
+          </sc-if>
+          <div onClick="{{ primaryAction }}" style="margin-top:12px;padding:16px;border-radius:17px;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;letter-spacing:0.3px;cursor:pointer;background:{{ ctaBg }};color:{{ ctaFg }};box-shadow:0 5px 0 {{ ctaShadow }}" style-active="transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.35)">{{ ctaLabel }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Kết quả" style="flex:1;display:flex;flex-direction:column;padding:70px 22px 46px;text-align:center">
+        <div style="margin:0 auto;width:96px;height:96px;border-radius:32px;background:linear-gradient(135deg,#C6F24E,#8FD413);display:flex;align-items:center;justify-content:center;font-size:44px;color:#171227">♪</div>
+        <div style="margin-top:20px;font-family:'Baloo 2',cursive;font-weight:800;font-size:30px;line-height:1.15">{{ resultTitle }}</div>
+        <div style="margin-top:8px;font-size:14px;color:#A79DC0;line-height:1.5;text-wrap:pretty">{{ resultBlurb }}</div>
+        <div style="margin-top:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px">
+          <sc-for list="{{ resultStats }}" as="s" hint-placeholder-count="3">
+            <div style="padding:15px 8px;border-radius:16px;background:#1E1830">
+              <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:22px;color:{{ s.color }}">{{ s.value }}</div>
+              <div style="font-size:11px;color:#A79DC0;margin-top:2px">{{ s.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:16px;padding:15px 16px;border-radius:17px;background:#1E1830;text-align:left">
+          <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">MAI HỌC GÌ</div>
+          <div style="margin-top:6px;font-size:13.5px;line-height:1.5;color:#E4DFF2;text-wrap:pretty">Quãng 5 mày nghe ổn rồi. Mai tao cho vào quãng 3 trưởng vs thứ — chỗ này mới quyết định mày nghe ra hợp âm vui hay buồn.</div>
+        </div>
+        <div style="flex:1"></div>
+        <div onClick="{{ backHome }}" style="margin-top:20px;padding:17px;border-radius:18px;background:#C6F24E;color:#171227;font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Nhận {{ xpEarned }} XP</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;padding:8px 10px 34px;border-top:1px solid rgba(255,255,255,0.07);background:#181227">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+          <div onClick="{{ t.tap }}" style="flex:1;padding:8px 2px 4px;text-align:center;cursor:pointer">
+            <div style="font-size:19px;line-height:1.1;color:{{ t.color }}">{{ t.icon }}</div>
+            <div style="margin-top:3px;font-size:11px;font-weight:600;color:{{ t.color }}">{{ t.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Đang tải" style="position:absolute;inset:0;background:#130F1F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:90">
+        <div style="display:flex;align-items:flex-end;gap:5px;height:44px">
+          <div style="width:7px;height:100%;border-radius:9px;background:#7C5CFF;animation:solBar 1s ease-in-out infinite"></div>
+          <div style="width:7px;height:100%;border-radius:9px;background:#7C5CFF;animation:solBar 1s ease-in-out 0.14s infinite"></div>
+          <div style="width:7px;height:100%;border-radius:9px;background:#C6F24E;animation:solBar 1s ease-in-out 0.28s infinite"></div>
+          <div style="width:7px;height:100%;border-radius:9px;background:#7C5CFF;animation:solBar 1s ease-in-out 0.42s infinite"></div>
+          <div style="width:7px;height:100%;border-radius:9px;background:#7C5CFF;animation:solBar 1s ease-in-out 0.56s infinite"></div>
+        </div>
+        <div style="font-size:13.5px;color:#A79DC0">Đang lên dây đàn…</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Mất mạng" style="position:absolute;inset:0;background:#130F1F;display:flex;flex-direction:column;padding:70px 24px 44px;z-index:90">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+          <div style="margin:0 auto;width:80px;height:80px;border-radius:28px;background:#1E1830;display:flex;align-items:center;justify-content:center;font-size:34px;color:#FFB020">⚠</div>
+          <div style="margin-top:20px;font-family:'Baloo 2',cursive;font-weight:700;font-size:25px;line-height:1.2">Mất mạng rồi</div>
+          <div style="margin-top:8px;font-size:13.5px;line-height:1.55;color:#A79DC0;text-wrap:pretty">Đừng lo — bài học đã tải về máy vẫn học được. XP sẽ đồng bộ khi có mạng lại.</div>
+          <div style="margin-top:18px;padding:14px 15px;border-radius:16px;background:#1E1830;text-align:left">
+            <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#C6F24E">CÒN DÙNG ĐƯỢC OFFLINE</div>
+            <div style="margin-top:8px;font-size:12.5px;line-height:1.6;color:#CFC7E4">Bài 3 đã tải · Đàn tự do · Tra hợp âm · 3 câu ôn lại</div>
+          </div>
+        </div>
+        <div onClick="{{ retryNet }}" style="padding:16px;border-radius:18px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Thử lại</div>
+        <div onClick="{{ dismissSys }}" style="margin-top:10px;padding:13px;text-align:center;font-size:13.5px;color:#8C82A8;cursor:pointer">Học offline</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isAudioBlocked }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Chặn âm thanh" style="position:absolute;inset:0;background:#130F1F;display:flex;flex-direction:column;padding:70px 24px 44px;z-index:90">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+          <div style="margin:0 auto;width:80px;height:80px;border-radius:28px;background:rgba(255,84,112,0.14);border:1.5px solid #FF5470;display:flex;align-items:center;justify-content:center;font-size:32px;color:#FF5470">◉</div>
+          <div style="margin-top:20px;font-family:'Baloo 2',cursive;font-weight:700;font-size:25px;line-height:1.2;text-wrap:pretty">App này không nghe được thì vô nghĩa</div>
+          <div style="margin-top:8px;font-size:13.5px;line-height:1.55;color:#A79DC0;text-wrap:pretty">Sol cần quyền phát âm thanh (và mic cho bài hát lại). Mở Cài đặt máy → Sol → bật Âm thanh &amp; Micro.</div>
+          <div style="margin-top:18px;padding:14px 15px;border-radius:16px;background:#1E1830;text-align:left">
+            <div style="font-size:12px;font-weight:600;letter-spacing:1.1px;color:#7C5CFF">TRONG LÚC CHỜ</div>
+            <div style="margin-top:8px;font-size:12.5px;line-height:1.6;color:#CFC7E4">Bài đọc nốt trên khuông và ghép thế bấm không cần âm thanh — vẫn học được.</div>
+          </div>
+        </div>
+        <div onClick="{{ dismissSys }}" style="padding:16px;border-radius:18px;background:#C6F24E;color:#171227;text-align:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:16.5px;cursor:pointer;box-shadow:0 5px 0 #96BC2C" style-active="transform:translateY(3px);box-shadow:0 2px 0 #96BC2C">Mở Cài đặt</div>
+        <div onClick="{{ dismissSys }}" style="margin-top:10px;padding:13px;text-align:center;font-size:13.5px;color:#8C82A8;cursor:pointer">Học không tiếng</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:20px;right:20px;bottom:110px;padding:13px 15px;border-radius:15px;background:#2E2445;border:1.5px solid #7C5CFF;font-size:13px;color:#E4DFF2;z-index:80;animation:solRise 0.2s ease both">{{ toast }}</div>
+    </sc-if>
+
+  </div>
+
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'onboard', onbStep: 0, goals: [0, 3], mins: 10,
+    tab: 'home', qi: 0, sel: null, checked: false, correct: false,
+    lives: 3, xp: 1240, streak: 12, right: 0, chord: 'C', prog: 0,
+    scale: 'cmaj', showNames: true, flash: [], toast: '', dead: false,
+    sys: null, slots: [], matched: {}, matchPick: null, taps: [], rhythmOff: 0,
+    micOn: false, micHz: 0, centsBest: 999, mistakes: [], naming: null,
+    vol: 0.8, remind: true, remindAt: '20:30', song: 0, briefNode: 2, reviewIdx: null
+  };
+
+  EN = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  VN = ['Đô', 'Đô#', 'Rê', 'Rê#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'La#', 'Si'];
+
+  GOALS = [
+    'Nghe ra nốt / quãng',
+    'Nhớ mặt nốt trên khuông + phím đàn',
+    'Nhớ tên & thế bấm hợp âm',
+    'Hiểu logic vòng hợp âm',
+    'Nghe ra vòng hợp âm của bài hát'
+  ];
+
+  QS = [
+    { type: 'keys', tag: 'NGHE RA NỐT', prompt: 'Nốt này là nốt nào? Bấm lên phím.', hint: 'Một nốt duy nhất, nằm trong quãng tám Đô.', midi: 64, ref: 60,
+      explain: 'Đó là Mi (E). Cách Đô đúng 4 phím → quãng 3 trưởng, cái quãng làm hợp âm nghe "vui".' },
+    { type: 'choice', tag: 'QUÃNG', prompt: 'Hai nốt vừa rồi cách nhau quãng gì?', hint: 'Nốt dưới là Đô. Nghe độ "rỗng" giữa hai nốt.', seq: [60, 67],
+      options: ['Quãng 3 trưởng (M3)', 'Quãng 4 đúng (P4)', 'Quãng 5 đúng (P5)', 'Quãng 8 (octave)'], answer: 2,
+      explain: 'Đô → Sol = 7 nửa cung = quãng 5 đúng. Nghe rỗng và chắc. Đây là bộ xương của mọi hợp âm.' },
+    { type: 'staff', tag: 'ĐỌC NỐT', prompt: 'Nốt trên khuông là nốt gì?', midi: 67,
+      options: ['Fa (F)', 'Sol (G)', 'La (A)', 'Si (B)'], answer: 1,
+      explain: 'Nó nằm trên dòng kẻ thứ 2 từ dưới — đúng cái dòng mà khoá Sol cuộn quanh. Nên nó là Sol (G). Mẹo: nhớ 1 nốt mốc rồi đếm.' },
+    { type: 'choice', tag: 'TRƯỞNG hay THỨ', prompt: 'Hợp âm này trưởng hay thứ?', hint: 'Ba nốt cùng lúc. Để ý nốt ở giữa.', chord: [60, 63, 67],
+      options: ['Trưởng (major) — sáng', 'Thứ (minor) — tối'], answer: 1,
+      explain: 'Đô–Mi♭–Sol: nốt giữa tụt nửa cung → hợp âm thứ (Cm). Trưởng và thứ khác nhau đúng 1 nửa cung, mà cảm giác khác hẳn.' },
+    { type: 'prog', tag: 'LOGIC VÒNG HỢP ÂM', prompt: 'C – G – Am – ? Hợp âm nào vào đây?', chord: null,
+      chips: [['C', 'I'], ['G', 'V'], ['Am', 'vi'], ['?', '?']], seq: null,
+      options: ['F', 'B', 'F#m', 'C#'], answer: 0,
+      explain: 'C–G–Am–F là vòng I–V–vi–IV, xương sống của hàng trăm bài pop. F (IV) đỡ Am rồi đẩy về C rất ngọt. B / F#m / C# không nằm trong giọng Đô trưởng nên nghe lạc ngay.' },
+    { type: 'fill', tag: 'ĐIỀN NỐT', prompt: 'Đặt nốt Sol lên khuông nhạc.', hint: 'Khoá Sol cuộn quanh đúng dòng của nó.', target: 4, midi: 67,
+      explain: 'Sol nằm TRÊN dòng kẻ thứ 2 từ dưới. Khoá Sol (𝄞) sinh ra để chỉ đúng dòng đó — nhớ 1 mốc này là đếm ra cả khuông.' },
+    { type: 'prog4', tag: 'NGHE VÒNG 4 HỢP ÂM', prompt: 'Nghe rồi xếp 4 hợp âm theo đúng thứ tự.', hint: 'Hợp âm đầu là C. Nghe cái nào căng nhất — đó là G.', prog: ['C', 'G', 'Am', 'F'],
+      explain: 'C–G–Am–F. Mẹo: G luôn là cái nghe căng nhất (muốn về C), Am là cái duy nhất nghe buồn, F nghe rộng và mở. Định vị được 3 cái đó là xong.' },
+    { type: 'match', tag: 'GHÉP THẾ BẤM', prompt: 'Ghép tên hợp âm với thế bấm trên đàn.', pairs: ['C', 'F', 'Am'],
+      explain: 'Ba hợp âm này chỉ khác nhau 1 nốt mỗi lần: C là Đô–Mi–Sol, Am là La–Đô–Mi (tụt Sol xuống La), F là Fa–La–Đô. Nhìn thế bấm là thấy chúng trượt vào nhau.' },
+    { type: 'rhythm', tag: 'TIẾT TẤU', prompt: 'Nghe 4 phách rồi vỗ lại đúng nhịp.', hint: '90 BPM. Vỗ 4 cái, đều tay.', beats: 4, bpm: 90,
+      explain: 'Nhịp quan trọng ngang cao độ. Đúng nốt mà sai nhịp thì vẫn không ai nhận ra bài — tai người bám nhịp trước khi bám nốt.' },
+    { type: 'sing', tag: 'HÁT LẠI', prompt: 'Nghe nốt Đô rồi hát lại đúng cao độ.', hint: 'Ngân "a" giữ đều. Lệch dưới 60 cent là tính đúng.', midi: 60,
+      explain: 'Hát lại được nghĩa là tai và giọng đã nối với nhau. Đây là bài tập hiệu quả nhất cho người mới — nghe thụ động mãi không lên bằng hát ra.' }
+  ];
+
+  CHORDS = {
+    C:  { name: 'C',  roman: 'I',   notes: 'Đô–Mi–Sol',  role: 'Chủ âm (tonic)',        keys: [60, 64, 67], why: 'Nhà. Kết bài ở C là nghe xong thấy xong. Mọi hợp âm khác đều được nghe trong tương quan với nó.' },
+    Dm: { name: 'Dm', roman: 'ii',  notes: 'Rê–Fa–La',   role: 'Tiền át (predominant)', keys: [60, 62, 65], why: 'Bước đệm. Dm rất thích đi tiếp sang G — cặp ii–V là câu mở chuẩn của jazz và ballad.' },
+    Em: { name: 'Em', roman: 'iii', notes: 'Mi–Sol–Si',  role: 'Trung gian',            keys: [64, 67, 71], why: 'Mờ mờ, lửng lơ. Dùng để đi từ C sang Am mà không bị hẫng.' },
+    F:  { name: 'F',  roman: 'IV',  notes: 'Fa–La–Đô',   role: 'Hạ át (subdominant)',   keys: [60, 65, 69], why: 'Mở ra, rộng. F không căng như G, nó chỉ nhấc bài lên rồi buông về C. Vòng C–F–C là cả nhạc nhà thờ lẫn rock.' },
+    G:  { name: 'G',  roman: 'V',   notes: 'Sol–Si–Rê',  role: 'Át (dominant)',         keys: [62, 67, 71], why: 'Căng nhất. Nốt Si trong G muốn nhích lên Đô cho bằng được — đó là lý do V→I nghe "về nhà". Tai mày nhận ra cái này trước cả khi mày biết tên nó.' },
+    Am: { name: 'Am', roman: 'vi',  notes: 'La–Đô–Mi',   role: 'Thứ song song',         keys: [60, 64, 69], why: 'Cùng 7 nốt với C nhưng nghe buồn, vì tai lấy La làm mốc. Đổi từ C sang Am là đổi tâm trạng mà không đổi nốt nào.' }
+  };
+
+  PROGS = [
+    { title: 'I – V – vi – IV', blurb: 'Đi từ nhà → căng → buồn nhẹ → mở ra, rồi quay về. Vòng phổ biến nhất của nhạc pop 30 năm nay.',
+      steps: [['C', 'I', 'nhà'], ['G', 'V', 'căng'], ['Am', 'vi', 'buồn'], ['F', 'IV', 'mở']] },
+    { title: 'ii – V – I', blurb: 'Câu kết cổ điển. Lực căng dồn dần qua từng hợp âm rồi giải quyết dứt điểm ở I.',
+      steps: [['Dm', 'ii', 'đệm'], ['G', 'V', 'căng'], ['C', 'I', 'giải']] }
+  ];
+
+  SCALES = {
+    cmaj: { label: 'Đô trưởng', pcs: [0, 2, 4, 5, 7, 9, 11], note: 'Bảy nốt trắng liền nhau. Bấm bừa trong đây vẫn nghe được — đó là lý do người ta dạy Đô trưởng trước.' },
+    amin: { label: 'La thứ', pcs: [9, 11, 0, 2, 4, 5, 7], note: 'Đúng 7 nốt của Đô trưởng, chỉ khác điểm bắt đầu là La. Cùng nguyên liệu, khác cảm xúc.' },
+    pent: { label: 'Ngũ cung', pcs: [0, 2, 4, 7, 9], note: 'Bỏ 2 nốt dễ gây chát (Fa và Si). Còn 5 nốt, gần như không thể bấm sai — dân solo hay bịa trong này.' }
+  };
+
+  SONGS = [
+    { title: 'Let It Be', artist: 'The Beatles', key: 'Đô trưởng', prog: ['C', 'G', 'Am', 'F'], roman: 'I – V – vi – IV',
+      note: 'Vòng pop kinh điển. Nghe được vòng này là mày mở được vài trăm bài khác.' },
+    { title: 'Đường tôi chở em về', artist: 'buitruonglinh', key: 'Đô trưởng', prog: ['Am', 'F', 'C', 'G'], roman: 'vi – IV – I – V',
+      note: 'Cùng 4 hợp âm với Let It Be, chỉ xoay điểm bắt đầu sang Am nên nghe buồn hơn.' },
+    { title: 'Someone Like You', artist: 'Adele', key: 'Đô trưởng', prog: ['C', 'Em', 'Am', 'F'], roman: 'I – iii – vi – IV',
+      note: 'Chèn Em (iii) vào giữa để đi từ C sang Am mượt, không bị hẫng.' },
+    { title: 'Nơi này có anh', artist: 'Sơn Tùng M-TP', key: 'Đô trưởng', prog: ['F', 'G', 'C', 'Am'], roman: 'IV – V – I – vi',
+      note: 'Mở bằng F (IV) nên câu đầu nghe rộng ngay, chưa cần về nhà.' }
+  ];
+
+  BADGES = [
+    { icon: '♪', name: 'Nốt đầu tiên', desc: 'Nghe ra 1 nốt', on: true },
+    { icon: '🔥', name: 'Bảy ngày', desc: 'Streak 7 ngày', on: true },
+    { icon: '◐', name: 'Tai quãng', desc: 'Đúng 20 câu quãng', on: true },
+    { icon: '✦', name: 'Vui hay buồn', desc: 'Phân biệt trưởng/thứ 15 lần', on: false },
+    { icon: '◈', name: 'Đọc vòng', desc: 'Nghe ra 1 vòng 4 hợp âm', on: false },
+    { icon: '★', name: 'Ba mươi ngày', desc: 'Streak 30 ngày', on: false },
+    { icon: '𝄞', name: 'Đọc khuông', desc: 'Đọc đúng 50 nốt', on: false },
+    { icon: '◉', name: 'Hát đúng', desc: 'Hát lại đúng 10 nốt', on: false }
+  ];
+
+  NODE_INFO = [
+    { title: 'Đồ Rê Mi', why: 'Ba nốt đầu để tai có mốc. Không có mốc thì không so được cái gì.' },
+    { title: 'Cả 7 nốt', why: 'Bảy phím trắng. Học xong là mày đàn được mọi bài trong giọng Đô trưởng.' },
+    { title: 'Quãng cơ bản', why: 'Quãng là khoảng cách giữa hai nốt. Nghe ra quãng là nghe ra tất cả — hợp âm chỉ là quãng xếp lên nhau.' },
+    { title: 'Trưởng vs thứ', why: 'Một nửa cung quyết định bài vui hay buồn. Đây là thứ tai người nhận ra nhanh nhất.' },
+    { title: 'Vòng I–V–vi–IV', why: 'Bốn hợp âm, hàng trăm bài hát. Hiểu logic là đoán được hợp âm tiếp theo.' },
+    { title: 'Nghe vòng trong bài thật', why: 'Áp dụng vào bài mày đang nghe hàng ngày. Đây là lúc nhạc lý thành hữu dụng.' }
+  ];
+
+  ac() {
+    if (!this._ac) { const A = window.AudioContext || window.webkitAudioContext; this._ac = new A(); }
+    if (this._ac.state === 'suspended') this._ac.resume();
+    return this._ac;
+  }
+  tone(midi, at, dur) {
+    const ac = this.ac(), t0 = ac.currentTime + at, f = 440 * Math.pow(2, (midi - 69) / 12);
+    const g = ac.createGain(), lp = ac.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2600;
+    g.gain.setValueAtTime(0, t0);
+    const vol = this.state.vol;
+    g.gain.linearRampToValueAtTime(0.24 * vol, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.09 * vol, t0 + 0.18);
+    g.gain.exponentialRampToValueAtTime(0.0008, t0 + dur);
+    [['triangle', f, 1], ['sine', f * 2, 0.32], ['sine', f * 3, 0.12]].forEach(([type, freq, amp]) => {
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.type = type; o.frequency.value = freq; og.gain.value = amp;
+      o.connect(og); og.connect(lp); o.start(t0); o.stop(t0 + dur + 0.05);
+    });
+    lp.connect(g); g.connect(ac.destination);
+  }
+  play(midis, dur) { midis.forEach(m => this.tone(m, 0, dur || 1.1)); }
+  seq(midis, gap, dur) { midis.forEach((m, i) => this.tone(m, i * (gap || 0.55), dur || 0.9)); }
+  chordSeq(list, gap) { list.forEach((keys, i) => keys.forEach(m => this.tone(m, i * (gap || 0.75), 1.0))); }
+
+  click(at) {
+    const ac = this.ac(), t0 = ac.currentTime + at;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'square'; o.frequency.value = 1100;
+    g.gain.setValueAtTime(0.14 * this.state.vol, t0);
+    g.gain.exponentialRampToValueAtTime(0.0008, t0 + 0.05);
+    o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + 0.07);
+  }
+  playRhythm(q) {
+    const spb = 60 / q.bpm;
+    for (let i = 0; i < q.beats; i++) this.click(i * spb);
+    this._rhythmT0 = performance.now();
+    this.setState({ taps: [], rhythmOff: 0 });
+  }
+  tapBeat() {
+    if (this.state.checked || !this._rhythmT0) return;
+    const q = this.QS[this.state.qi], spb = (60 / q.bpm) * 1000;
+    const t = performance.now() - this._rhythmT0;
+    this.click(0);
+    this.setState(s => {
+      const taps = s.taps.concat([t]);
+      const off = taps.reduce((a, x, i) => a + Math.abs(x - i * spb), 0) / taps.length;
+      return { taps, rhythmOff: Math.round(off) };
+    });
+  }
+
+  detectPitch(buf, rate) {
+    let rms = 0;
+    for (let i = 0; i < buf.length; i++) rms += buf[i] * buf[i];
+    if (Math.sqrt(rms / buf.length) < 0.012) return -1;
+    const minP = Math.floor(rate / 520), maxP = Math.floor(rate / 90);
+    let best = -1, bestCorr = 0;
+    for (let p = minP; p <= maxP; p++) {
+      let c = 0;
+      for (let i = 0; i < buf.length - p; i += 2) c += buf[i] * buf[i + p];
+      c /= (buf.length - p) / 2;
+      if (c > bestCorr) { bestCorr = c; best = p; }
+    }
+    return bestCorr > 0.004 && best > 0 ? rate / best : -1;
+  }
+  async startMic() {
+    if (this._mic) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const ac = this.ac(), an = ac.createAnalyser();
+      an.fftSize = 2048;
+      ac.createMediaStreamSource(stream).connect(an);
+      this._mic = { stream, an, buf: new Float32Array(an.fftSize) };
+      this.setState({ micOn: true, centsBest: 999 });
+      this.micLoop();
+    } catch (e) { this.setState({ sys: 'audioblocked' }); }
+  }
+  micLoop() {
+    if (!this._mic) return;
+    this._mic.an.getFloatTimeDomainData(this._mic.buf);
+    const hz = this.detectPitch(this._mic.buf, this.ac().sampleRate);
+    if (hz > 0) {
+      const q = this.QS[this.state.qi];
+      const cents = Math.round((69 + 12 * Math.log2(hz / 440) - (q.midi || 60)) * 100);
+      this.setState(s => ({ micHz: Math.round(hz), centsBest: Math.abs(cents) < Math.abs(s.centsBest) ? cents : s.centsBest }));
+    }
+    this._micT = setTimeout(() => this.micLoop(), 70);
+  }
+  stopMic() {
+    clearTimeout(this._micT);
+    if (this._mic) { this._mic.stream.getTracks().forEach(t => t.stop()); this._mic = null; }
+    this.setState({ micOn: false });
+  }
+
+  hit(midi) {
+    this.play([midi], 1.0);
+    const id = midi + '-' + Date.now();
+    this.setState(s => ({ flash: s.flash.concat([{ midi, id }]) }));
+    setTimeout(() => this.setState(s => ({ flash: s.flash.filter(f => f.id !== id) })), 320);
+  }
+  isFlash(midi) { return this.state.flash.some(f => f.midi === midi); }
+
+  nameOf(midi) {
+    const pc = ((midi % 12) + 12) % 12;
+    const mode = this.state.naming || this.props.naming || 'both';
+    if (mode === 'en') return this.EN[pc];
+    if (mode === 'vn') return this.VN[pc];
+    return this.VN[pc] === this.EN[pc] ? this.EN[pc] : this.VN[pc];
+  }
+
+  keyboard(start, octaves, opts) {
+    const o = opts || {}, whiteOff = [0, 2, 4, 5, 7, 9, 11], blackAfter = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
+    const n = 7 * octaves, w = 100 / n, bw = w * 0.62, whites = [], blacks = [];
+    for (let oc = 0; oc < octaves; oc++) {
+      for (let i = 0; i < 7; i++) {
+        const idx = oc * 7 + i, midi = start + oc * 12 + whiteOff[i];
+        const on = o.on ? o.on(midi) : false, inScale = o.scale ? o.scale(midi) : true;
+        whites.push({
+          midi, left: idx * w, width: w, label: o.labels ? this.nameOf(midi) : '',
+          bg: on ? (o.onBg || '#7C5CFF') : this.isFlash(midi) ? '#CFC7E4' : inScale ? '#F6FAEC' : '#9E97B4',
+          fg: on ? '#fff' : inScale ? '#4E6B14' : '#5E5775',
+          tap: () => (o.tap ? o.tap(midi) : this.hit(midi))
+        });
+        if (blackAfter[i] !== undefined && (i < 6 || oc < octaves)) {
+          const bm = start + oc * 12 + blackAfter[i], bon = o.on ? o.on(bm) : false;
+          const bIn = o.scale ? o.scale(bm) : true;
+          blacks.push({
+            midi: bm, left: (idx + 1) * w - bw / 2, width: bw,
+            bg: bon ? (o.onBg || '#7C5CFF') : this.isFlash(bm) ? '#4A4168' : bIn ? '#33285C' : '#191323',
+            tap: () => (o.tap ? o.tap(bm) : this.hit(bm))
+          });
+        }
+      }
+    }
+    return { whites, blacks };
+  }
+
+  answer(i) { if (!this.state.checked) this.setState({ sel: i }); }
+  pickKey(midi) { this.hit(midi); if (!this.state.checked) this.setState({ sel: midi }); }
+
+  isReady() {
+    const q = this.QS[this.state.qi], s = this.state;
+    if (q.type === 'prog4') return s.slots.length === 4;
+    if (q.type === 'match') return q.pairs.every(c => s.matched[c]);
+    if (q.type === 'rhythm') return s.taps.length >= q.beats;
+    if (q.type === 'sing') return s.centsBest !== 999;
+    return s.sel !== null;
+  }
+  check() {
+    const q = this.QS[this.state.qi], s = this.state;
+    let ok;
+    if (q.type === 'keys') ok = s.sel === q.midi;
+    else if (q.type === 'fill') ok = s.sel === q.target;
+    else if (q.type === 'prog4') ok = s.slots.every((c, i) => c === q.prog[i]);
+    else if (q.type === 'match') ok = q.pairs.every(c => s.matched[c] === c);
+    else if (q.type === 'rhythm') ok = s.taps.length === q.beats && s.rhythmOff < 200;
+    else if (q.type === 'sing') ok = Math.abs(s.centsBest) < 60;
+    else ok = s.sel === q.answer;
+    if (q.type === 'sing') this.stopMic();
+    this.setState(st => ({
+      checked: true, correct: ok, dead: !ok && st.lives - 1 <= 0,
+      right: st.right + (ok ? 1 : 0),
+      lives: ok ? st.lives : Math.max(0, st.lives - 1),
+      mistakes: ok ? st.mistakes : st.mistakes.concat([{ qi: st.qi, tag: q.tag, prompt: q.prompt, due: 'mai' }])
+    }));
+    if (ok) this.seq([72, 76, 79], 0.09, 0.5); else this.seq([61, 60], 0.12, 0.5);
+  }
+  next() {
+    if (this.state.dead || this.state.qi + 1 >= this.QS.length) { this.setState({ screen: 'result' }); return; }
+    this.setState(s => ({ qi: s.qi + 1, sel: null, checked: false, slots: [], matched: {}, matchPick: null, taps: [], rhythmOff: 0, centsBest: 999 }));
+    setTimeout(() => this.playQ(), 320);
+  }
+  slotPut(name) {
+    if (this.state.checked) return;
+    this.play(this.CHORDS[name].keys, 1.1);
+    this.setState(s => (s.slots.length >= 4 ? s : { slots: s.slots.concat([name]) }));
+  }
+  slotClear(i) { if (!this.state.checked) this.setState(s => ({ slots: s.slots.filter((_, j) => j !== i) })); }
+  matchTap(kind, val) {
+    if (this.state.checked) return;
+    const s = this.state;
+    if (kind === 'name') { this.setState({ matchPick: val }); return; }
+    this.play(this.CHORDS[val].keys, 1.1);
+    if (s.matchPick) this.setState(st => ({ matched: Object.assign({}, st.matched, { [st.matchPick]: val }), matchPick: null }));
+  }
+  playQ() {
+    const q = this.QS[this.state.qi];
+    if (q.seq) this.seq(q.seq, 0.6, 1.0);
+    else if (q.chord) this.play(q.chord, 1.4);
+    else if (q.type === 'keys') this.play([q.midi], 1.3);
+    else if (q.type === 'prog') this.chordSeq([this.CHORDS.C.keys, this.CHORDS.G.keys, this.CHORDS.Am.keys], 0.7);
+    else if (q.type === 'prog4') this.chordSeq(q.prog.map(n => this.CHORDS[n].keys), 0.8);
+    else if (q.type === 'fill') this.play([q.midi], 1.2);
+    else if (q.type === 'rhythm') this.playRhythm(q);
+    else if (q.type === 'sing') this.play([q.midi], 1.4);
+  }
+  startLesson(from) {
+    this.setState({ screen: 'lesson', qi: from || 0, sel: null, checked: false, right: 0, dead: false,
+      lives: this.props.lives ?? 3, slots: [], matched: {}, matchPick: null, taps: [], rhythmOff: 0, centsBest: 999 });
+    setTimeout(() => this.playQ(), 450);
+  }
+  fakeLoad(then) {
+    this.setState({ sys: 'loading' });
+    setTimeout(() => this.setState(Object.assign({ sys: null }, then || {})), 1400);
+  }
+  say(msg) { this.setState({ toast: msg }); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: '' }), 2200); }
+
+  renderVals() {
+    const s = this.state, q = this.QS[s.qi], playful = this.props.playful ?? true;
+    const screen = s.screen, tab = s.tab;
+    const onLesson = screen === 'lesson', onResult = screen === 'result', onOnb = screen === 'onboard';
+    const full = onOnb || onLesson || onResult || ['brief', 'review', 'settings', 'badges', 'remind'].indexOf(screen) >= 0;
+    const pick = (a, b) => (playful ? a : b);
+    const pcOf = m => ((m % 12) + 12) % 12;
+
+    const nodeDefs = [
+      ['♪', 'Đồ Rê Mi', 'Ba nốt đầu tiên', 'done', 0],
+      ['♫', 'Cả 7 nốt', 'Đô đến Si, không thăng giáng', 'done', 30],
+      ['◐', 'Quãng cơ bản', '3, 4, 5 — nghe độ xa', 'now', 8],
+      ['✦', 'Trưởng vs thứ', 'Vui hay buồn, 1 nửa cung', 'lock', -26],
+      ['◈', 'Vòng I–V–vi–IV', 'Logic của nhạc pop', 'lock', 4],
+      ['★', 'Nghe vòng trong bài thật', 'Bài mày đang nghe dùng vòng gì', 'lock', 26]
+    ];
+    const nodes = nodeDefs.map(([icon, title, sub, st, dx]) => ({
+      icon, title, sub, dx,
+      bg: st === 'lock' ? '#241D38' : st === 'now' ? '#7C5CFF' : '#C6F24E',
+      shadow: st === 'lock' ? '#191330' : st === 'now' ? '#5837C9' : '#96BC2C',
+      fg: st === 'lock' ? '#5B5279' : st === 'now' ? '#fff' : '#171227',
+      titleColor: st === 'lock' ? '#6E6690' : '#F4F1FB',
+      anim: st === 'now' ? 'solPulse 2s ease-out infinite' : 'none',
+      tap: st === 'lock'
+        ? () => this.say(pick('Khoá. Học xong bài trước đã, đừng nhảy cóc.', 'Hoàn thành bài trước để mở bài này.'))
+        : () => this.setState({ screen: 'brief', briefNode: nodeDefs.findIndex(d => d[1] === title) })
+    }));
+
+    const sel = this.CHORDS[s.chord];
+    const chordKb = this.keyboard(60, 1, { labels: true, on: m => sel.keys.indexOf(m) >= 0, tap: m => this.hit(m) });
+    const scale = this.SCALES[s.scale];
+    const freeKb = this.keyboard(60, 2, {
+      labels: s.showNames,
+      scale: m => scale.pcs.indexOf(((m % 12) + 12) % 12) >= 0, tap: m => this.hit(m)
+    });
+    const lessonKb = this.keyboard(60, 1, {
+      labels: false, onBg: s.checked ? (s.correct ? '#3DDC97' : '#FF5470') : '#7C5CFF',
+      on: m => s.sel === m, tap: m => this.pickKey(m)
+    });
+
+    const options = (q.options || []).map((label, i) => {
+      const isSel = s.sel === i, isAns = i === q.answer;
+      const good = s.checked && isAns, bad = s.checked && isSel && !isAns;
+      return {
+        label, key: ['A', 'B', 'C', 'D'][i],
+        bg: good ? 'rgba(61,220,151,0.14)' : bad ? 'rgba(255,84,112,0.14)' : isSel ? 'rgba(124,92,255,0.16)' : '#1E1830',
+        border: good ? '#3DDC97' : bad ? '#FF5470' : isSel ? '#7C5CFF' : 'rgba(255,255,255,0.07)',
+        fg: '#F4F1FB',
+        badgeBg: good ? '#3DDC97' : bad ? '#FF5470' : isSel ? '#7C5CFF' : '#2C2442',
+        badgeFg: good || bad || isSel ? '#171227' : '#8C82A8',
+        tap: () => this.answer(i)
+      };
+    });
+
+    const staffLines = [0, 1, 2, 3, 4].map(i => ({ top: 12 + i * 12 }));
+    const dia = m => { const pc = ((m % 12) + 12) % 12, map = { 0: 0, 2: 1, 4: 2, 5: 3, 7: 4, 9: 5, 11: 6 }; return Math.floor(m / 12) * 7 + (map[pc] ?? 0); };
+    const ready = this.isReady() || s.checked;
+    const bi = s.briefNode, bInfo = this.NODE_INFO[bi] || this.NODE_INFO[0];
+    const bDone = bi <= 1;
+    const song = this.SONGS[s.song];
+    const centsShown = s.micHz > 0 ? Math.round((69 + 12 * Math.log2(s.micHz / 440) - (q.midi || 60)) * 100) : 0;
+    const clampCents = Math.max(-100, Math.min(100, centsShown));
+    const matchOrder = ['F', 'Am', 'C'];
+
+    return {
+      isOnboard: onOnb, isHome: !full && tab === 'home',
+      isChords: !full && tab === 'chords',
+      isPiano: !full && tab === 'piano',
+      isMe: !full && tab === 'me',
+      isSongs: !full && tab === 'songs',
+      isLesson: onLesson, isResult: onResult,
+      isBrief: screen === 'brief', isReview: screen === 'review',
+      isSettings: screen === 'settings', isBadges: screen === 'badges', isRemind: screen === 'remind',
+      isLoading: s.sys === 'loading', isOffline: s.sys === 'offline', isAudioBlocked: s.sys === 'audioblocked',
+      showTabs: !full,
+      toast: s.toast,
+
+      onbGoal: s.onbStep === 0, onbTime: s.onbStep === 1,
+      onbCta: s.onbStep === 0 ? 'Tiếp' : pick('Vào học, khỏi hứa hẹn', 'Bắt đầu học'),
+      onbNext: () => (s.onbStep === 0 ? this.setState({ onbStep: 1 }) : this.setState({ screen: 'app' })),
+      goalRows: this.GOALS.map((label, i) => {
+        const on = s.goals.indexOf(i) >= 0;
+        return {
+          label, tick: on ? '✓' : '', dot: on ? '#C6F24E' : '#2C2442',
+          border: on ? '#C6F24E' : 'rgba(255,255,255,0.07)',
+          tap: () => this.setState(st => ({ goals: on ? st.goals.filter(g => g !== i) : st.goals.concat([i]) }))
+        };
+      }),
+      timeRows: [[5, '5 phút', 'Nhẹ nhàng'], [10, '10 phút', 'Tao khuyên cái này'], [20, '20 phút', 'Nghiêm túc đấy']].map(([m, label, note]) => ({
+        label, note, mins: m + "'",
+        dot: s.mins === m ? '#C6F24E' : '#5B5279',
+        border: s.mins === m ? '#C6F24E' : 'rgba(255,255,255,0.07)',
+        pick: () => this.setState({ mins: m })
+      })),
+
+      streak: s.streak, xp: s.xp.toLocaleString('vi-VN'), lives: s.lives,
+      chapterPct: '34%', chapterNote: 'Bài ' + (bi + 1) + ' / 6 · còn ' + s.mins + ' phút hôm nay',
+      nodes,
+
+      tabs: [['♪', 'Học', 'home'], ['♬', 'Bài hát', 'songs'], ['◈', 'Hợp âm', 'chords'], ['▤', 'Đàn', 'piano'], ['◉', 'Tôi', 'me']].map(([icon, label, id]) => ({
+        icon, label, color: tab === id ? '#C6F24E' : '#6E6690', tap: () => this.setState({ tab: id })
+      })),
+
+      chordCards: Object.keys(this.CHORDS).map(k => ({
+        name: this.CHORDS[k].name, roman: this.CHORDS[k].roman,
+        bg: s.chord === k ? 'rgba(124,92,255,0.18)' : '#1E1830',
+        border: s.chord === k ? '#7C5CFF' : 'rgba(255,255,255,0.07)',
+        fg: s.chord === k ? '#fff' : '#CFC7E4',
+        tap: () => { this.setState({ chord: k }); this.play(this.CHORDS[k].keys, 1.5); }
+      })),
+      selChord: sel, chordWhites: chordKb.whites, chordBlacks: chordKb.blacks,
+      playSelChord: () => this.play(sel.keys, 1.6),
+
+      progTabs: this.PROGS.map((p, i) => ({
+        label: p.title, bg: s.prog === i ? '#7C5CFF' : '#241D38', fg: s.prog === i ? '#fff' : '#A79DC0',
+        tap: () => this.setState({ prog: i })
+      })),
+      prog: this.PROGS[s.prog],
+      progSteps: this.PROGS[s.prog].steps.map(([name, roman, fn]) => ({
+        name, roman, fn, bg: '#241D38', border: 'rgba(255,255,255,0.07)', fg: '#F4F1FB',
+        tap: () => this.play(this.CHORDS[name].keys, 1.5)
+      })),
+      playProg: () => this.chordSeq(this.PROGS[s.prog].steps.map(([n]) => this.CHORDS[n].keys), 0.85),
+
+      scaleTabs: Object.keys(this.SCALES).map(k => ({
+        label: this.SCALES[k].label, bg: s.scale === k ? '#7C5CFF' : '#241D38', fg: s.scale === k ? '#fff' : '#A79DC0',
+        tap: () => this.setState({ scale: k })
+      })),
+      freeWhites: freeKb.whites, freeBlacks: freeKb.blacks, scaleNote: scale.note,
+      namesTrackBg: s.showNames ? '#C6F24E' : '#2C2442',
+      namesKnobX: s.showNames ? '20px' : '0px',
+      toggleNames: () => this.setState(st => ({ showNames: !st.showNames })),
+
+      stats: [
+        { value: s.streak, label: 'ngày liền', color: '#FFB020' },
+        { value: s.xp.toLocaleString('vi-VN'), label: 'XP', color: '#C6F24E' },
+        { value: 'Lv 3', label: 'Tai non', color: '#7C5CFF' }
+      ],
+      week: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map((label, i) => ({
+        label, mark: i <= 4 ? '♪' : '', bg: i <= 4 ? '#C6F24E' : '#241D38', fg: '#171227'
+      })),
+      skills: [
+        { label: 'Nghe ra nốt đơn', pct: '78%', color: '#3DDC97' },
+        { label: 'Nghe quãng', pct: '54%', color: '#C6F24E' },
+        { label: 'Nghe hợp âm & vòng', pct: '31%', color: '#FF5470' }
+      ],
+
+      lessonPct: Math.round(((s.qi + (s.checked ? 1 : 0)) / this.QS.length) * 100) + '%',
+      q: {
+        tag: q.tag, prompt: q.prompt, hint: q.hint || '', explain: q.explain,
+        hasPlayer: q.type === 'keys' || q.type === 'choice',
+        hasRef: !!q.ref, isStaff: q.type === 'staff', isKeys: q.type === 'keys', isProg: q.type === 'prog',
+        isFill: q.type === 'fill', isProg4: q.type === 'prog4', isMatch: q.type === 'match',
+        isRhythm: q.type === 'rhythm', isSing: q.type === 'sing',
+        hasOptions: !!q.options,
+        progChips: (q.chips || []).map(([name, roman], i) => ({
+          name, roman,
+          bg: i === 3 ? 'rgba(124,92,255,0.14)' : '#241D38',
+          border: i === 3 ? '#7C5CFF' : 'transparent',
+          fg: i === 3 ? '#7C5CFF' : '#F4F1FB'
+        }))
+      },
+      options,
+      lessonWhites: lessonKb.whites, lessonBlacks: lessonKb.blacks,
+      staffLines, staffNoteTop: 60 - (dia(q.midi || 67) - dia(64)) * 6 - 7,
+      lessonPctRaw: s.qi,
+      playQuestion: () => this.playQ(), playRef: () => this.play([q.ref || 60], 1.1),
+      checked: s.checked,
+      verdict: s.correct ? pick('Tai mày ổn đấy!', 'Chính xác') : pick('Sai. Nghe lại đi.', 'Chưa đúng'),
+      verdictColor: s.correct ? '#3DDC97' : '#FF5470',
+      footBg: s.checked ? (s.correct ? 'rgba(61,220,151,0.08)' : 'rgba(255,84,112,0.08)') : 'transparent',
+      footBorder: s.checked ? (s.correct ? 'rgba(61,220,151,0.3)' : 'rgba(255,84,112,0.3)') : 'rgba(255,255,255,0.07)',
+      ctaLabel: s.checked ? 'Tiếp tục' : ready ? 'Kiểm tra' : pick('Chọn đi đã', 'Chọn một đáp án'),
+      ctaBg: s.checked ? (s.correct ? '#3DDC97' : '#FF5470') : ready ? '#C6F24E' : '#241D38',
+      ctaFg: s.checked ? '#0E2A1E' : ready ? '#171227' : '#5B5279',
+      ctaShadow: s.checked ? (s.correct ? '#26A972' : '#C93A52') : ready ? '#96BC2C' : '#191330',
+      primaryAction: s.checked ? () => this.next() : ready ? () => this.check() : () => this.say(pick('Chọn một đáp án trước đã.', 'Hãy chọn một đáp án.')),
+      quitLesson: () => this.setState({ screen: 'app' }),
+
+      resultTitle: s.dead ? pick('Hết tim. Nghỉ đã.', 'Hết lượt thử') : s.right >= this.QS.length - 2 ? pick('Ghê đấy!', 'Làm tốt lắm') : pick('Xong bài. Tạm được.', 'Hoàn thành bài học'),
+      resultBlurb: 'Đúng ' + s.right + '/' + this.QS.length + '. ' + (s.right >= 4
+        ? 'Mai giữ nhịp là tai lên thật, không phải nói cho vui.'
+        : 'Sai vài câu là bình thường — tai cần lặp, không cần thông minh.'),
+      resultStats: [
+        { value: '+' + (s.right * 12), label: 'XP', color: '#C6F24E' },
+        { value: Math.round((s.right / this.QS.length) * 100) + '%', label: 'chính xác', color: '#3DDC97' },
+        { value: s.streak + 1, label: 'ngày liền', color: '#FFB020' }
+      ],
+      xpEarned: s.right * 12,
+      backHome: () => this.setState(st => ({ screen: 'app', tab: 'home', xp: st.xp + st.right * 12, streak: st.streak + 1 })),
+
+      /* ── Hồ sơ: menu ── */
+      meMenu: [
+        { icon: '↻', label: 'Ôn lại câu sai', sub: s.mistakes.length ? s.mistakes.length + ' câu đang chờ ôn' : 'Chưa có câu nào sai', bg: 'rgba(255,84,112,0.16)', fg: '#FF5470', tap: () => this.setState({ screen: 'review' }) },
+        { icon: '★', label: 'Thành tích', sub: this.BADGES.filter(b => b.on).length + ' / 8 huy hiệu', bg: 'rgba(198,242,78,0.16)', fg: '#C6F24E', tap: () => this.setState({ screen: 'badges' }) },
+        { icon: '⚙', label: 'Cài đặt', sub: 'Tên nốt, âm lượng, nhắc nhở', bg: '#2C2442', fg: '#A79DC0', tap: () => this.setState({ screen: 'settings' }) }
+      ],
+      backToMe: () => this.setState({ screen: 'app', tab: 'me' }),
+      backToHome: () => this.setState({ screen: 'app', tab: 'home' }),
+
+      /* ── Thư viện bài hát ── */
+      songRows: this.SONGS.map((sg, i) => ({
+        title: sg.title, artist: sg.artist, key: sg.key, roman: sg.roman, note: sg.note,
+        open: s.song === i,
+        bg: s.song === i ? 'rgba(124,92,255,0.12)' : '#1E1830',
+        border: s.song === i ? '#7C5CFF' : 'rgba(255,255,255,0.07)',
+        tap: () => this.setState({ song: i }),
+        play: () => this.chordSeq(sg.prog.map(n => this.CHORDS[n].keys), 0.85),
+        chips: sg.prog.map(n => ({ name: n, roman: this.CHORDS[n].roman, tap: () => this.play(this.CHORDS[n].keys, 1.4) }))
+      })),
+
+      /* ── Chi tiết bài học ── */
+      brief: {
+        icon: ['♪', '♫', '◐', '✦', '◈', '★'][bi] || '◐',
+        no: bi + 1, title: bInfo.title, why: bInfo.why,
+        cta: bDone ? 'Học lại bài này' : pick('Vào, 10 phút thôi', 'Bắt đầu bài học'),
+        stats: [
+          { value: '10' + "'", label: 'thời lượng', color: '#C6F24E' },
+          { value: this.QS.length, label: 'câu hỏi', color: '#7C5CFF' },
+          { value: '+' + this.QS.length * 12, label: 'XP tối đa', color: '#FFB020' }
+        ],
+        steps: [
+          { n: '1', text: 'Nghe một nốt rồi bấm lên phím đàn — không cần biết tên trước.' },
+          { n: '2', text: 'So hai nốt, nói xem chúng cách nhau bao xa.' },
+          { n: '3', text: 'Đọc và điền nốt trên khuông nhạc.' },
+          { n: '4', text: 'Nghe vòng 4 hợp âm rồi xếp lại đúng thứ tự.' },
+          { n: '5', text: 'Vỗ nhịp và hát lại — tai với giọng phải nối được với nhau.' }
+        ]
+      },
+      closeBrief: () => this.setState({ screen: 'app', tab: 'home' }),
+      briefStart: () => this.startLesson(0),
+
+      /* ── Ôn lại câu sai ── */
+      hasMistakes: s.mistakes.length > 0,
+      noMistakes: s.mistakes.length === 0,
+      mistakeCount: s.mistakes.length,
+      mistakeRows: s.mistakes.map(m => ({
+        tag: m.tag, prompt: m.prompt, due: m.due,
+        tap: () => this.startLesson(m.qi)
+      })),
+      reviewBuckets: [
+        { n: s.mistakes.length, label: 'ôn mai', color: '#FF5470' },
+        { n: 2, label: 'ôn sau 3 ngày', color: '#FFB020' },
+        { n: 5, label: 'đã thuộc', color: '#3DDC97' }
+      ],
+      startReview: () => this.startLesson(s.mistakes.length ? s.mistakes[0].qi : 0),
+
+      /* ── Thành tích ── */
+      badgeCount: this.BADGES.filter(b => b.on).length,
+      badgeCards: this.BADGES.map(b => ({
+        icon: b.icon, name: b.name, desc: b.desc,
+        bg: b.on ? 'rgba(198,242,78,0.10)' : '#1E1830',
+        border: b.on ? 'rgba(198,242,78,0.45)' : 'rgba(255,255,255,0.07)',
+        iconBg: b.on ? '#C6F24E' : '#241D38',
+        iconFg: b.on ? '#171227' : '#5B5279',
+        nameColor: b.on ? '#F4F1FB' : '#6E6690'
+      })),
+
+      /* ── Cài đặt ── */
+      namingTabs: [['both', 'Việt', 'Đô Rê Mi'], ['en', 'Anh', 'C D E'], ['vn', 'Việt đủ', 'Đô# Rê#']].map(([k, label, sample]) => {
+        const on = (s.naming || 'both') === k;
+        return { label, sample, bg: on ? '#7C5CFF' : '#241D38', fg: on ? '#fff' : '#A79DC0', tap: () => this.setState({ naming: k }) };
+      }),
+      volPct: Math.round(s.vol * 100) + '%',
+      volSteps: [1,2,3,4,5,6,7,8,9,10].map(i => ({
+        h: (12 + i * 3) + 'px',
+        bg: i / 10 <= s.vol + 0.001 ? '#C6F24E' : '#241D38',
+        tap: () => { this.setState({ vol: i / 10 }); setTimeout(() => this.play([67], 0.9), 30); }
+      })),
+      testVol: () => this.chordSeq([this.CHORDS.C.keys], 0.5),
+      remind: s.remind,
+      remindAt: s.remindAt,
+      remindNote: s.remind ? 'Mỗi ngày ' + s.remindAt : 'Đang tắt — dễ bỏ dở lắm',
+      remindTrackBg: s.remind ? '#C6F24E' : '#2C2442',
+      remindKnobX: s.remind ? '20px' : '0px',
+      toggleRemind: () => this.setState(st => ({ remind: !st.remind })),
+      timeChips: ['07:30', '12:30', '20:30', '22:00'].map(t => ({
+        label: t, bg: s.remindAt === t ? '#7C5CFF' : '#241D38', fg: s.remindAt === t ? '#fff' : '#A79DC0',
+        tap: () => this.setState({ remindAt: t })
+      })),
+      openRemind: () => this.setState({ screen: 'remind' }),
+      sysTriggers: [
+        { label: 'Đang tải', tap: () => this.fakeLoad() },
+        { label: 'Mất mạng', tap: () => this.setState({ sys: 'offline' }) },
+        { label: 'Chặn âm thanh', tap: () => this.setState({ sys: 'audioblocked' }) },
+        { label: 'Ôn lại rọng', tap: () => this.setState({ screen: 'review', mistakes: [] }) }
+      ],
+      dismissSys: () => this.setState({ sys: null }),
+      retryNet: () => this.fakeLoad({ sys: null }),
+
+      /* ── Nhắc nhở hàng ngày ── */
+      remindTitle: pick('Tai không lên bằng ý chí. Lên bằng lặp lại.', 'Học đều quan trọng hơn học nhiều'),
+      remindBody: pick('Mày nói không có thời gian. Đúng — nên tao chỉ xin 10 phút, đúng giờ mày rảnh nhất.', 'Một lời nhắc mỗi ngày vào giờ bạn chọn, 10 phút mỗi buổi.'),
+      remindCopy: pick('10 phút thôi. Hôm nay là quãng 5 — cái quãng làm nên mọi hợp âm.', 'Đến giờ luyện tai rồi. Hôm nay học quãng 5.'),
+      remindFacts: [
+        'Học 10 phút mỗi ngày hiệu quả hơn 70 phút một lần mỗi tuần.',
+        'Tao chỉ nhắc 1 lần/ngày. Bỏ 2 ngày liền thì tao im luôn.',
+        'Tắt lúc nào cũng được trong Cài đặt.'
+      ],
+      allowRemind: () => { this.setState({ remind: true, screen: 'app', tab: 'me' }); this.say('Đã bật nhắc ' + s.remindAt + '. Mai gặp lại.'); },
+      skipRemind: () => this.setState({ screen: 'settings' }),
+
+      /* ── Câu hỏi: điền nốt ── */
+      fillSlots: [0,1,2,3,4,5,6,7,8].map(i => {
+        const on = s.sel === i, isAns = i === q.target;
+        const good = s.checked && isAns, bad = s.checked && on && !isAns;
+        return {
+          top: 54 - i * 6,
+          bg: good ? '#3DDC97' : bad ? '#FF5470' : on ? '#7C5CFF' : 'transparent',
+          border: good ? '#3DDC97' : bad ? '#FF5470' : on ? '#7C5CFF' : 'rgba(58,51,85,0.35)',
+          tap: () => { if (!s.checked) { this.setState({ sel: i }); this.play([60 + [0,2,4,5,7,9,11,12,14][i]], 0.9); } }
+        };
+      }),
+
+      /* ── Câu hỏi: vòng 4 hợp âm ── */
+      prog4Slots: [0,1,2,3].map(i => {
+        const name = s.slots[i];
+        const isAns = s.checked && name === (q.prog || [])[i];
+        return {
+          name: name || '·', roman: name ? this.CHORDS[name].roman : '',
+          style: name ? 'solid' : 'dashed',
+          bg: s.checked ? (isAns ? 'rgba(61,220,151,0.14)' : 'rgba(255,84,112,0.14)') : name ? 'rgba(124,92,255,0.16)' : '#1E1830',
+          border: s.checked ? (isAns ? '#3DDC97' : '#FF5470') : name ? '#7C5CFF' : 'rgba(255,255,255,0.12)',
+          fg: name ? '#F4F1FB' : '#5B5279',
+          tap: () => this.slotClear(i)
+        };
+      }),
+      prog4Pool: ['C', 'Dm', 'Em', 'F', 'G', 'Am'].map(n => ({
+        name: n, roman: this.CHORDS[n].roman,
+        bg: '#241D38', op: s.slots.indexOf(n) >= 0 ? '0.4' : '1',
+        tap: () => this.slotPut(n)
+      })),
+
+      /* ── Câu hỏi: ghép thế bấm ── */
+      matchNames: (q.pairs || []).map(n => {
+        const done = !!s.matched[n], ok = s.matched[n] === n;
+        return {
+          name: n, state: done ? (s.checked ? (ok ? 'đúng' : 'sai') : 'đã ghép') : (s.matchPick === n ? 'chọn thế bấm' : 'chưa ghép'),
+          bg: s.checked && done ? (ok ? 'rgba(61,220,151,0.14)' : 'rgba(255,84,112,0.14)') : s.matchPick === n ? 'rgba(124,92,255,0.16)' : '#1E1830',
+          border: s.checked && done ? (ok ? '#3DDC97' : '#FF5470') : s.matchPick === n ? '#7C5CFF' : 'rgba(255,255,255,0.07)',
+          fg: '#F4F1FB',
+          tap: () => this.matchTap('name', n)
+        };
+      }),
+      matchShapes: matchOrder.map(n => {
+        const kb = this.keyboard(60, 1, { on: m => this.CHORDS[n].keys.indexOf(m) >= 0, onBg: '#7C5CFF' });
+        const used = Object.keys(s.matched).filter(k => s.matched[k] === n);
+        return {
+          whites: kb.whites, blacks: kb.blacks,
+          bg: used.length ? 'rgba(124,92,255,0.12)' : '#1E1830',
+          border: used.length ? '#7C5CFF' : 'rgba(255,255,255,0.07)',
+          tap: () => this.matchTap('shape', n)
+        };
+      }),
+      matchHint: s.matchPick ? 'Đang ghép ' + s.matchPick + ' — bấm thế bấm bên phải.' : 'Bấm tên hợp âm bên trái, rồi bấm thế bấm bên phải. Bấm thế bấm để nghe thử.',
+
+      /* ── Câu hỏi: tiết tấu ── */
+      beatBoxes: [0,1,2,3].map(i => {
+        const hit = s.taps.length > i;
+        return {
+          label: i + 1,
+          bg: hit ? (s.checked ? (s.correct ? 'rgba(61,220,151,0.16)' : 'rgba(255,84,112,0.16)') : 'rgba(124,92,255,0.18)') : '#1E1830',
+          border: hit ? (s.checked ? (s.correct ? '#3DDC97' : '#FF5470') : '#7C5CFF') : 'rgba(255,255,255,0.07)',
+          fg: hit ? '#F4F1FB' : '#5B5279'
+        };
+      }),
+      tapBeat: () => this.tapBeat(),
+      tapCount: s.taps.length + ' / 4',
+      offLabel: s.taps.length ? s.rhythmOff + ' ms' : '—',
+      offColor: !s.taps.length ? '#5B5279' : s.rhythmOff < 200 ? '#3DDC97' : '#FF5470',
+
+      /* ── Câu hỏi: hát lại ── */
+      micToggle: () => (s.micOn ? this.stopMic() : this.startMic()),
+      micLabel: s.micOn ? 'Đang nghe — hát đi' : 'Bật mic rồi hát',
+      micBg: s.micOn ? '#FF5470' : '#7C5CFF',
+      micShadow: s.micOn ? '#C93A52' : '#5837C9',
+      micFg: '#fff',
+      needleLeft: 'calc(' + (50 + clampCents / 2.4) + '% - 2.5px)',
+      needleColor: s.micHz > 0 ? (Math.abs(centsShown) < 30 ? '#3DDC97' : Math.abs(centsShown) < 60 ? '#C6F24E' : '#FF5470') : '#5B5279',
+      singNote: s.micHz > 0 ? this.nameOf(Math.round(69 + 12 * Math.log2(s.micHz / 440))) : '—',
+      centsLabel: s.centsBest === 999 ? '—' : (s.centsBest > 0 ? '+' : '') + s.centsBest + '¢',
+      centsColor: s.centsBest === 999 ? '#5B5279' : Math.abs(s.centsBest) < 60 ? '#3DDC97' : '#FF5470'
+    };
+  }
+}
+</script>
+</body>
+</html>
